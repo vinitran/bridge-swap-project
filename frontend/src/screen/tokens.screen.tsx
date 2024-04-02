@@ -26,6 +26,8 @@ export const Token = () => {
         fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=true&price_change_percentage=${timeValue}&locale=vi&precision=2`)
             .then(res => res.json())
             .then(data => setData(data))
+
+        console.log("data:", data)
     }
 
     useEffect(() => {
