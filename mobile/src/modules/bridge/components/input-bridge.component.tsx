@@ -5,7 +5,7 @@ import { AppTheme } from '../../../theme/theme';
 import { TokenData } from '../../../const/token.const';
 import { TokenDropdown } from '../../../components/token-dropdown/token-dropdown.component';
 
-interface InputSwapProps {
+interface InputBridgeProps {
   label: string;
   amount: string;
   onChangeAmount: (value: string) => void;
@@ -15,7 +15,7 @@ interface InputSwapProps {
   tokenList: TokenData[];
 }
 
-export const InputSwap = ({
+export const InputBridge = ({
   label,
   amount,
   token,
@@ -23,13 +23,12 @@ export const InputSwap = ({
   onChangeToken,
   onChangeAmount: onChangeBalance,
   disable = false,
-}: InputSwapProps) => {
+}: InputBridgeProps) => {
   const theme = useTheme();
   const styles = initStyles(theme);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
       <View style={styles.flexRow}>
         <TextInput
           placeholder="0"

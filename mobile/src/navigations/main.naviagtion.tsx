@@ -6,6 +6,7 @@ import { useTheme } from '@react-navigation/native';
 import { SwapScreen } from '../modules/swap/screen/swap.screen';
 import { AccountScreen } from '../modules/account/screen/account.screen';
 import { TabIcon } from './components/tab-icon.component';
+import { FaucetScreen } from '../modules/faucet/screen/faucet.screen';
 
 interface TabNavigatorProps {
   name: string;
@@ -30,6 +31,12 @@ export const MainNavigation = () => {
       icon: 'swap-outline',
       component: SwapScreen,
       tabName: 'Swap',
+    },
+    {
+      name: 'faucet',
+      icon: 'faucet',
+      component: FaucetScreen,
+      tabName: 'Faucet',
     },
     {
       name: 'account',

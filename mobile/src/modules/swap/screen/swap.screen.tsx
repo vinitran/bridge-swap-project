@@ -13,8 +13,8 @@ export const SwapScreen = () => {
 
   const [tokenIn, setTokenIn] = useState(tokenData[chainId][0]);
   const [tokenOut, setTokenOut] = useState<TokenData>();
-  const [balanceIn, setBalanceIn] = useState<string>();
-  const [balanceOut, setBalanceOut] = useState<string>();
+  const [amountIn, setAmountIn] = useState<string>();
+  const [amountOut, setAmountOut] = useState<string>();
 
   const theme = useTheme();
   const styles = initStyles(theme);
@@ -23,8 +23,8 @@ export const SwapScreen = () => {
     <View style={styles.container}>
       <InputSwap
         label={'Số nhập'}
-        balance={''}
-        onChangeBalance={setBalanceIn}
+        amount={''}
+        onChangeAmount={setAmountIn}
         token={tokenIn}
         onChangeToken={setTokenIn}
         tokenList={tokenData[chainId]}
@@ -35,8 +35,8 @@ export const SwapScreen = () => {
       <InputSwap
         disable
         label={'Số nhận được'}
-        balance={balanceOut ?? '0'}
-        onChangeBalance={setBalanceOut}
+        amount={amountOut ?? '0'}
+        onChangeAmount={setAmountOut}
         token={tokenOut}
         onChangeToken={setTokenOut}
         tokenList={tokenData[chainId]}
