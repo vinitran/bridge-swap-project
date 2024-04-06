@@ -1,51 +1,51 @@
 {
-    "chain": [
-        {
-            "chainId": "97",
-            "name": "BSC Testnet",
-            "img": ""
-        },
-        {
-             "chainId": "5",
-            "name": "ETH Goerli",
-            "img": ""
-        },
-        {
-             "chainId": "5555",
-            "name": "CVC Testnet",
-            "img": ""
-        }
-    ],
-    "coin": {
-        "97": [
-            {
-                "name": "VINI",
-                "address": ""
-            },
-            {
-                "name": "BNB",
-                "address": "0x0000000000000000000000000000000000000000"
-            }
-        ],
-        "5": [
-            {
-                "name": "VINI",
-                "address": ""
-            },
-            {
-                "name": "ETH",
-                "address": "0x0000000000000000000000000000000000000000"
-            }
-        ],
-        "5555": [
-            {
-                "name": "VINI",
-                "address": ""
-            },
-            {
-                "name": "XSR",
-                "address": "0x0000000000000000000000000000000000000000"
-            }
-        ]
+  "chain": [
+    {
+      "chainId": "97",
+      "name": "BSC Testnet",
+      "img": ""
+    },
+    {
+      "chainId": "5",
+      "name": "ETH Goerli",
+      "img": ""
+    },
+    {
+      "chainId": "5555",
+      "name": "CVC Testnet",
+      "img": ""
     }
+  ],
+  "coin": {
+    "97": [
+      {
+        "name": "USDT",
+        "address": "0x337610D27c682E347C9cD64B773b136F07C7a64D"
+      },
+      {
+        "name": "BNB",
+        "address": "0xae13d9843a79d44b2997915a7343a960e43a1107"
+      }
+    ],
+    "5": [
+      {
+        "name": "VINI",
+        "address": ""
+      },
+      {
+        "name": "ETH",
+        "address": "0x0000000000000000000000000000000000000000"
+      }
+    ],
+    "5555": [
+      {
+        "name": "VINI",
+        "address": ""
+      },
+      {
+        "name": "XSR",
+        "address": "0x0000000000000000000000000000000000000000"
+      }
+    ]
+  }
 }
