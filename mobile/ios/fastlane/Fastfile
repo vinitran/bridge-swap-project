@@ -17,7 +17,19 @@ default_platform(:ios)
 
 platform :ios do
   desc "Description of what the lane does"
-  lane :custom_lane do
-    # add actions here: https://docs.fastlane.tools/actions
+  lane :beta do
+    
+  enable_automatic_code_signing
+
+    build_app(scheme: "mobile",
+             workspace: "mobile.xcworkspace",
+             export_method: "development"
+             )
+
+    firebase_app_distribution(
+      app: "1:1033436295853:ios:a81775118199fd9b684c24",
+      groups: "tester",
+      service_credentials_file: File.expand_path("../firebase-connect.json", __FILE__).shellescape.to_s
+    )
   end
 end

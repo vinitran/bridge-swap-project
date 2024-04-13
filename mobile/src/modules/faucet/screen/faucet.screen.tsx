@@ -87,6 +87,7 @@ const initStyles = (theme: AppTheme) => {
       borderWidth: 1,
       borderColor: theme.primaryColor,
       paddingHorizontal: theme.spaceMS,
+      minHeight: theme.spaceXXL
     },
   });
 };

@@ -23,7 +23,7 @@ platform :android do
     )
 
     firebase_app_distribution(
-      app: "com.mobile",
+      app: "1:1033436295853:android:0c8dbbe15b4ab836684c24",
       groups: "tester",
       service_credentials_file: File.expand_path("../firebase-connect.json", __FILE__).shellescape.to_s
     )
