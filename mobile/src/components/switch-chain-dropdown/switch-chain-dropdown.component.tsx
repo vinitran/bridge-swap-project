@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -9,77 +9,72 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { useChainId, useNetwork, useSwitchNetwork } from 'wagmi';
+
 import { Icon } from '../icon/icon.component';
 import { useTheme } from '../../hook/theme.hook';
 import { AppTheme } from '../../theme/theme';
-import { Chain } from 'viem';
-
-interface ChainDropdownProps {
-  chainList: Chain[];
-  value: Chain;
-  onChangeChain: (chain: Chain) => void;
-}
+import { Chain, toHex } from 'viem';
+import { getAccount } from 'wagmi/actions';
+import { addChain } from 'viem/wallet';
 
 interface RenderItemProps {
   item: Chain;
 }
 
-export const ChainDrodown = ({ chainList, value, onChangeChain }: ChainDropdownProps) => {
+export const SwitchChainDrodown = () => {
+  const chainId = useChainId();
+  const { chains } = useNetwork();
+  const { switchNetwork } = useSwitchNetwork();
+
   const [isOpen, setIsOpen] = useState(false);
+  const [chain, setChain] = useState(chains.find((chain) => chainId === chain.id) ?? chains[0]);
 
   const theme = useTheme();
   const styles = initStyles(theme);
 
+  useEffect(() => {
+    if (!chainId) return;
+
+    setChain(chains.find((chain) => chainId === chain.id) ?? chains[0]);
+  }, [chainId]);
+
   const toggleModalVisible = () => setIsOpen(!isOpen);
 
-  const onPressItem = (chain: Chain) => {
-    onChangeChain(chain);
+  const onSwitchChange = async (item: Chain) => {
+    if (chain.id === item.id) return toggleModalVisible();
+
+    switchNetwork?.(item.id);
     toggleModalVisible();
   };
 
   const renderItem = useCallback(
     ({ item }: RenderItemProps) => {
       return (
-        <TouchableOpacity style={styles.modalItemContainer} onPress={() => onPressItem(item)}>
+        <TouchableOpacity style={styles.modalItemContainer} onPress={() => onSwitchChange(item)}>
           <Image />
           <Text style={styles.modalItemText}>{item.name}</Text>
         </TouchableOpacity>
       );
     },
-    [onPressItem]
+    [onSwitchChange]
   );
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={toggleModalVisible} style={styles.dropdown}>
         <Text style={styles.text} ellipsizeMode="tail" numberOfLines={1}>
-          {value.name}
+          {chain.name}
         </Text>
+        {isOpen ? <Icon name="chevron-up" disable /> : <Icon name="chevron-down" disable />}
         {isOpen ? (
-          <Icon name="chevron-up-dark" disable />
+          <View style={styles.modalView}>
+            <FlatList data={chains} renderItem={renderItem} style={styles.flatList} />
+          </View>
         ) : (
-          <Icon name="chevron-down-dark" disable />
+          <></>
         )}
       </TouchableOpacity>
-      {isOpen ? (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={isOpen}
-          onRequestClose={toggleModalVisible}
-        >
-          <TouchableOpacity onPress={toggleModalVisible} style={styles.overlay}>
-            <TouchableWithoutFeedback onPress={() => {}}>
-              <View style={styles.modalView}>
-                <Text style={styles.title}>Chọn 1 chain</Text>
-                <FlatList data={chainList} renderItem={renderItem} style={styles.flatList} />
-              </View>
-            </TouchableWithoutFeedback>
-          </TouchableOpacity>
-        </Modal>
-      ) : (
-        <></>
-      )}
     </View>
   );
 };
@@ -89,34 +84,35 @@ const initStyles = (theme: AppTheme) => {
     dropdown: {
       flexDirection: 'row',
       alignItems: 'center',
-      borderRadius: theme.radiusS,
+      borderRadius: theme.radiusCircle,
       borderColor: theme.primaryColor,
       borderWidth: 1,
       paddingHorizontal: theme.spaceS,
       paddingVertical: theme.spaceS,
       justifyContent: 'space-between',
+      maxWidth: '50%',
+      backgroundColor: theme.primaryColor,
     },
     container: {
-      flex: 1,
+      //flex: 1,
+      marginVertical: theme.spaceMS,
+      marginHorizontal: theme.spaceS,
+      zIndex: 10,
     },
     text: {
-      color: theme.textColor,
+      color: theme.textContrastColor,
       marginRight: theme.spaceS,
     },
-    overlay: {
-      flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
     modalView: {
-      width: '85%',
-      backgroundColor: theme.backgroundColor,
+      position: 'absolute',
+      backgroundColor: theme.neutralColor200,
       borderRadius: theme.radiusMS,
       margin: theme.spaceML,
       paddingHorizontal: theme.spaceS,
       paddingVertical: theme.spaceM,
       alignItems: 'center',
+      top: 24,
+      left: -18,
       shadowColor: '#000',
       shadowOffset: {
         width: 0,
@@ -124,7 +120,6 @@ const initStyles = (theme: AppTheme) => {
       },
       shadowOpacity: 0.25,
       shadowRadius: 4,
-      elevation: 5,
     },
     modalItemContainer: {
       alignItems: 'center',

@@ -1,17 +1,17 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTheme } from '../../../hook/theme.hook';
-import { StyleSheet, Text, View } from 'react-native';
-import { useAccount, useDisconnect, useNetwork, useWalletClient } from 'wagmi';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import { useAccount, useDisconnect, useNetwork } from 'wagmi';
 import { AppTheme } from '../../../theme/theme';
 import { AccountItem } from '../components/account-item.component';
 import { useWalletConnectModal } from '@walletconnect/modal-react-native';
+import { SwitchChainDrodown } from '../../../components/switch-chain-dropdown/switch-chain-dropdown.component';
 
 export const AccountScreen = () => {
   const theme = useTheme();
   const styles = initStyles(theme);
 
   const { address } = useAccount();
-  const {} = useWalletConnectModal();
   const { chains, chain } = useNetwork();
   const { disconnect } = useDisconnect();
 
@@ -26,6 +26,8 @@ export const AccountScreen = () => {
 
   return (
     <View style={styles.container}>
+      <SwitchChainDrodown />
+      <Image source={require('../../../assets/images/avatar.png')} style={styles.avatar} />
       <Text style={styles.address} ellipsizeMode="middle" numberOfLines={1}>
         {address}
       </Text>
@@ -61,6 +63,13 @@ const initStyles = (theme: AppTheme) => {
     },
     action: {
       marginTop: theme.spaceML,
+    },
+    avatar: {
+      alignSelf: 'center',
+      width: 3 * theme.spaceXXL,
+      aspectRatio: 1,
+      height: undefined,
+      marginTop: theme.spaceM,
     },
   });
 };

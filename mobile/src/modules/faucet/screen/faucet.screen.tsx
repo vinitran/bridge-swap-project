@@ -12,10 +12,9 @@ import { Icon } from '../../../components/icon/icon.component';
 export const FaucetScreen = () => {
   const theme = useTheme();
   const styles = initStyles(theme);
-  const { chains } = useNetwork();
-  const chainId = useChainId();
+  const { chains, chain: currentChain } = useNetwork();
 
-  const [chain, setChain] = useState(chains.find((chain) => chain.id === chainId) ?? chains[0]);
+  const [chain, setChain] = useState(currentChain ?? chains[0]);
   const [token, setToken] = useState<TokenData>(tokenData[chain.id][0]);
   const [isDiffWallet, setIsDiffWallet] = useState(false);
   const [walletAdd, setWalletAdd] = useState<string>();
@@ -31,7 +30,7 @@ export const FaucetScreen = () => {
       </View>
       <TouchableOpacity style={styles.flexRow} onPress={toggleIsDiffWallet} activeOpacity={1}>
         <Icon name={isDiffWallet ? 'checkbox-fill' : 'checkbox-none'} disable />
-        <Text style={styles.text}>Give me a token</Text>
+        <Text style={styles.text}>Nhận vào địa chỉ ví khác</Text>
       </TouchableOpacity>
       {isDiffWallet ? (
         <TextInput
@@ -44,7 +43,11 @@ export const FaucetScreen = () => {
       ) : (
         <></>
       )}
-      <Button onPress={() => {}} label="Bridge" style={{ container: styles.buttonContainer }} />
+      <Button
+        onPress={() => {}}
+        label="Give me a token"
+        style={{ container: styles.buttonContainer }}
+      />
     </View>
   );
 };

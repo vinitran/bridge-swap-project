@@ -11,8 +11,8 @@ const projectId = '4d2d5b225dff8db0bca0bf91f8f925e8';
 
 // 2. Create config
 const metadata = {
-  name: 'Web3Modal RN',
-  description: 'Web3Modal RN Example',
+  name: 'Bridge Swap Mobile',
+  description: 'Bridge Swap Mobile',
   url: 'https://web3modal.com',
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
   redirect: {
