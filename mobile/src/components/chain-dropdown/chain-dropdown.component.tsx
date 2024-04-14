@@ -102,6 +102,7 @@ const initStyles = (theme: AppTheme) => {
     text: {
       color: theme.textColor,
       marginRight: theme.spaceS,
+      flex: 1,
     },
     overlay: {
       flex: 1,

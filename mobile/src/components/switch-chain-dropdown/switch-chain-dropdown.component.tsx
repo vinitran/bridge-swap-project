@@ -1,22 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  FlatList,
-  Image,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useChainId, useNetwork, useSwitchNetwork } from 'wagmi';
 
 import { Icon } from '../icon/icon.component';
 import { useTheme } from '../../hook/theme.hook';
 import { AppTheme } from '../../theme/theme';
-import { Chain, toHex } from 'viem';
-import { getAccount } from 'wagmi/actions';
-import { addChain } from 'viem/wallet';
+import { Chain } from 'viem';
 
 interface RenderItemProps {
   item: Chain;
@@ -102,6 +91,8 @@ const initStyles = (theme: AppTheme) => {
     text: {
       color: theme.textContrastColor,
       marginRight: theme.spaceS,
+      flexShrink: 1,
+      flex: 1,
     },
     modalView: {
       position: 'absolute',
