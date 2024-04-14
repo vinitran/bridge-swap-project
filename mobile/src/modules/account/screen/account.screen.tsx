@@ -4,7 +4,6 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { useAccount, useDisconnect, useNetwork } from 'wagmi';
 import { AppTheme } from '../../../theme/theme';
 import { AccountItem } from '../components/account-item.component';
-import { useWalletConnectModal } from '@walletconnect/modal-react-native';
 import { SwitchChainDrodown } from '../../../components/switch-chain-dropdown/switch-chain-dropdown.component';
 
 export const AccountScreen = () => {
@@ -28,9 +27,11 @@ export const AccountScreen = () => {
     <View style={styles.container}>
       <SwitchChainDrodown />
       <Image source={require('../../../assets/images/avatar.png')} style={styles.avatar} />
-      <Text style={styles.address} ellipsizeMode="middle" numberOfLines={1}>
-        {address}
-      </Text>
+      <View style={styles.addWrapper}>
+        <Text style={styles.address} ellipsizeMode="middle" numberOfLines={1}>
+          {address}
+        </Text>
+      </View>
       <View style={styles.action}>
         {actions.map((action) => (
           <AccountItem
@@ -52,11 +53,13 @@ const initStyles = (theme: AppTheme) => {
       backgroundColor: theme.backgroundColor,
     },
     address: {
+      color: theme.textContrastColor,
+      fontSize: theme.fontM,
+    },
+    addWrapper: {
       marginHorizontal: theme.spaceXXL,
       paddingHorizontal: theme.spaceML,
-      color: theme.textContrastColor,
       marginVertical: theme.spaceM,
-      fontSize: theme.fontM,
       paddingVertical: theme.spaceS,
       borderRadius: theme.radiusCircle,
       backgroundColor: theme.primaryColor,

@@ -1,6 +1,6 @@
 import '@walletconnect/react-native-compat';
 import { WagmiConfig, useAccount } from 'wagmi';
-import { mainnet, polygon, arbitrum, bscTestnet } from 'viem/chains';
+import { mainnet, polygon, arbitrum, bscTestnet, sepolia } from 'viem/chains';
 import { createWeb3Modal, defaultWagmiConfig, Web3Modal } from '@web3modal/wagmi-react-native';
 import React from 'react';
 import { useWalletConnectModal } from '@walletconnect/modal-react-native';
@@ -21,7 +21,7 @@ const metadata = {
   },
 };
 
-const chains = [bscTestnet, polygon, arbitrum];
+const chains = [bscTestnet, sepolia];
 
 export const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
