@@ -14,7 +14,6 @@ export const BridgeScreen = () => {
   const styles = initStyles(theme);
   const { chains } = useNetwork();
   const chainId = useChainId();
-  console.log(chainId);
 
   const [chainIn, setChainIn] = useState(chains[0]);
   const [chainOut, setChainOut] = useState(chains[1]);
