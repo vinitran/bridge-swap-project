@@ -1,8 +1,9 @@
 package main
 
 import (
-	"bridge/config"
 	context2 "context"
+
+	"bridge/config"
 
 	"bridge/app/blockchain/chainFactory"
 	"bridge/context"

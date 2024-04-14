@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bridge/content/bob"
-	"bridge/etherman"
 	"log"
 	"time"
 
+	"bridge/content/bob"
+	"bridge/etherman"
 
 	"bridge/config"
 	"bridge/content/datastore"

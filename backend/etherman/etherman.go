@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/ethereum/go-ethereum/crypto"
 
 	BridgeRouter "bridge/etherman/smartcontract/bridgeRouter"
 	Erc20 "bridge/etherman/smartcontract/erc20token"

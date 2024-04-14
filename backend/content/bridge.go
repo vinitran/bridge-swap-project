@@ -1,8 +1,6 @@
 package content
 
 import (
-	"bridge/util"
-
 	"context"
 	"database/sql"
 	"log"

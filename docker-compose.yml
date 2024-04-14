@@ -28,8 +28,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file:
-      - ./backend/.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -48,8 +46,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file:
-      - ./backend/.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -68,8 +64,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file:
-      - ./backend/.env
     depends_on:
       postgres:
         condition: service_healthy
@@ -81,7 +75,6 @@ services:
       - "/bin/sh"
       - "-c"
       - "/app/main cronjob"
-
 
   migrate:
     container_name: migrate
