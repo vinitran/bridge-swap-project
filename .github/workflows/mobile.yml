@@ -42,8 +42,8 @@ jobs:
           java-version: "17"
           cache: "gradle"
       
-      - name: Setup firebase connect
-        run: echo ${{env.FIREBASE_CONNECT}} > android/fastlane/firebase-connect.json && echo ${{env.FIREBASE_CONNECT}} > android/fastlane/firebase-connect.json
+      #- name: Setup firebase connect
+      #  run: echo ${{env.FIREBASE_CONNECT}} > android/fastlane/firebase-connect.json && echo ${{env.FIREBASE_CONNECT}} > android/fastlane/firebase-connect.json
 
       - name: Build Android
         run: cd android && fastlane beta && cd ..
