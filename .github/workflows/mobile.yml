@@ -11,7 +11,9 @@ on:
 jobs:
   build:
     runs-on: macOS-latest
-
+    run:
+      shell: bash
+      working-directory: ./mobile
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -20,20 +22,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-        working-directory: ./mobile
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./mobile
 
       - name: Install Fastlane
         run: bundle install
-        working-directory: ./mobile
 
       - name: Build Android
         run: cd android && fastlane beta && cd ..
-        working-directory: ./mobile/android
 
       - name: Build iOS
         run: cd ios && pod install && fastlane beta && cd ..
-        working-directory: ./mobile/ios
