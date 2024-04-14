@@ -11,9 +11,9 @@ on:
 jobs:
   build:
     runs-on: macOS-latest
-    run:
-      shell: bash
-      working-directory: ./mobile
+    defaults:
+      run:
+        working-directory: ./mobile
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
