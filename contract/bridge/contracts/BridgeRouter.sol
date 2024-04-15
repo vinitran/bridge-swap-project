@@ -31,7 +31,7 @@ contract BridgeRouter  is Ownable, AccessControl {
     receive() external payable {}
     
     function createBridgePool(address _token) external onlyOwner {
-        require(_token != address(0), 'UniswapV2: ZERO_ADDRESS');
+        require(_token != address(0), 'BRIDGE: ZERO_ADDRESS');
         bytes memory bytecode = type(BridgePool).creationCode;
         bytes32 salt = keccak256(abi.encodePacked(_token));
         address bridgePoolAddr;

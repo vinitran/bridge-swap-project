@@ -1,13 +1,15 @@
 package ethereum
 
 import (
-	"bridge/app/blockchain/chainFactory"
-	"bridge/content/bob"
 	"fmt"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"math/big"
 	"os"
+
+	"bridge/app/blockchain/chainFactory"
+	"bridge/content/bob"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 type Ethereum struct {
@@ -18,7 +20,7 @@ type Ethereum struct {
 
 func (e *Ethereum) NewClient() error {
 	chainRpc := os.Getenv(fmt.Sprintf("RPC_%s", e.ChainId))
-	//log.Println(chainRpc)
+	// log.Println(chainRpc)
 	if chainRpc == "" {
 		return fmt.Errorf("chain: Invalid chain id")
 	}

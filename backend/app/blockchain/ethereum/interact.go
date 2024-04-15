@@ -4,10 +4,11 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"fmt"
+	"math/big"
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	"math/big"
 )
 
 func (e *Ethereum) Auth(privateK string) (*bind.TransactOpts, error) {

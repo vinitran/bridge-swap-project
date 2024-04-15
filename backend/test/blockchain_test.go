@@ -1,12 +1,14 @@
 package test
 
 import (
-	"bridge/app/blockchain"
-	"bridge/app/content/bob"
 	"fmt"
-	"github.com/joho/godotenv"
 	"testing"
 	"time"
+
+	"bridge/app/blockchain"
+	"bridge/content/bob"
+
+	"github.com/joho/godotenv"
 )
 
 func TestTrackingData(t *testing.T) {

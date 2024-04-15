@@ -1,20 +1,23 @@
 package main
 
 import (
-	"bridge/config"
+	"log"
+	"time"
+
 	"bridge/content/bob"
+	"bridge/etherman"
+
+	"bridge/config"
 	"bridge/content/datastore"
 	"bridge/context"
 	"github.com/urfave/cli/v2"
-	"log"
-	"os"
-	"strings"
-	"time"
 )
 
 const (
 	envChainIdList       = "CHAIN_ID_LIST"
 	redisNewDepositEvent = "NEW_DEPOSIT_EVENT"
+
+	MAX_CHANEL = 20
 )
 
 func beforeStartCrawler(c *cli.Context) error {
@@ -29,23 +32,31 @@ func beforeStartCrawler(c *cli.Context) error {
 }
 
 func startCrawler(c *cli.Context) error {
-	events := make(chan bob.Transaction)
-	chainList := strings.Split(os.Getenv(envChainIdList), ".")
+	chainClient, err := etherman.NewAllClient(Config().Etherman)
+	if err != nil {
+		return err
+	}
 
-	for _, chainId := range chainList {
-		go func(chainId string) {
-			err := crawl(chainId, events)
+	events := make(chan etherman.EventDatastore, MAX_CHANEL)
+
+	for _, chain := range chainClient {
+		go func(chain *etherman.Client) {
+			query := etherman.DefaultQuery(chain.Cfg)
+
+			err = chain.SubcribeNewEvents(ctx, query, events)
 			if err != nil {
 				log.Println(err)
+				return
 			}
-		}(chainId)
+		}(chain)
 	}
 
 	for {
 		select {
 		case event := <-events:
+
 			tx := datastore.DatastoreTransaction{}
-			transaction, err := tx.Insert(ctx, SQLRepository(), &event)
+			transaction, err := tx.Insert(ctx, SQLRepository(), EventDatastoreToBob(event))
 			if err != nil {
 				log.Println(err)
 				continue
@@ -62,11 +73,15 @@ func startCrawler(c *cli.Context) error {
 	}
 }
 
-func crawl(chainId string, events chan bob.Transaction) error {
-	chain := ChainRepository(chainId)
-	err := chain.TrackDeposit(events)
-	if err != nil {
-		return err
+func EventDatastoreToBob(event etherman.EventDatastore) *bob.Transaction {
+	return &bob.Transaction{
+		User:       event.User,
+		Token:      event.Token,
+		RawAmount:  event.RawAmount,
+		ChainID:    event.ChainID,
+		IsComplete: event.IsComplete,
+		CreatedAt:  event.CreatedAt,
+		UpdatedAt:  event.UpdatedAt,
+		Hash:       event.Hash,
 	}
-	return err
 }

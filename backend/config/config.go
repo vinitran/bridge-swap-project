@@ -1,15 +1,17 @@
 package config
 
 import (
-	"bridge/db"
-	"bridge/etherman"
 	"bytes"
-	"github.com/mitchellh/mapstructure"
-	"github.com/spf13/viper"
-	"github.com/urfave/cli/v2"
 	"log"
 	"path/filepath"
 	"strings"
+
+	"bridge/db"
+	"bridge/etherman"
+
+	"github.com/mitchellh/mapstructure"
+	"github.com/spf13/viper"
+	"github.com/urfave/cli/v2"
 )
 
 const (

@@ -21,7 +21,7 @@ const coin: {
   '97': [
     {
       name: 'VINI',
-      address: '0x32D7eEE6513224f459D221BfED0C3af45343CbB7',
+      address: '0x6b08b796b4b43d565c34cf4b57d8c871db410ebe',
       icon: 'https://icon-library.com/images/v-icon/v-icon-11.jpg',
     },
     {

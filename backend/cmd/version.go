@@ -1,9 +1,10 @@
 package main
 
 import (
+	"os"
+
 	backend "bridge"
 	"github.com/urfave/cli/v2"
-	"os"
 )
 
 func versionCmd(*cli.Context) error {

@@ -1,13 +1,12 @@
 package ethereum
 
 import (
-	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
+
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
-var (
-	depositEventHash = crypto.Keccak256Hash([]byte("Deposit(address,address,uint256)")).Hex()
-)
+var depositEventHash = crypto.Keccak256Hash([]byte("Deposit(address,address,uint256)")).Hex()
 
 const (
 	gasLimitURC20Token = 300000

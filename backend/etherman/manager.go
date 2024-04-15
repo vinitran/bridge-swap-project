@@ -3,11 +3,13 @@ package etherman
 import (
 	"crypto/ecdsa"
 	"fmt"
+	"math/big"
+	"strings"
+	"time"
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
-	"math/big"
-	"strings"
 )
 
 // GetAuth configures and returns an auth object.
@@ -33,4 +35,15 @@ func GetAddress(privateKeyStr string) (common.Address, error) {
 	}
 
 	return crypto.PubkeyToAddress(*publicKeyECDSA), nil
+}
+
+type EventDatastore struct {
+	User       string    `db:"user" `
+	Token      string    `db:"token" `
+	RawAmount  string    `db:"raw_amount" `
+	ChainID    string    `db:"chain_id" `
+	IsComplete bool      `db:"is_complete" `
+	CreatedAt  time.Time `db:"created_at" `
+	UpdatedAt  time.Time `db:"updated_at" `
+	Hash       string    `db:"hash" `
 }

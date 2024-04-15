@@ -1,10 +1,9 @@
 package content
 
 import (
-	"github.com/gin-gonic/gin"
-	"math/big"
 	"net/http"
-	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Response struct {
@@ -43,15 +42,4 @@ func responseErrInternalServerErrorWithDetail(c *gin.Context, message string) {
 
 func responseErrNotFound(c *gin.Context) {
 	c.JSON(http.StatusNotFound, Response{Code: http.StatusNotFound, Message: http.StatusText(http.StatusNotFound)})
-}
-
-func ToUint64(s string) uint64 {
-	number, _ := strconv.ParseUint(s, 10, 64)
-	return number
-}
-
-func ToBigInt(s string) *big.Int {
-	n := new(big.Int)
-	n, _ = n.SetString(s, 10)
-	return n
 }

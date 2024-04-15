@@ -1,12 +1,14 @@
 package datastore
 
 import (
-	b "bridge/content/bob"
 	"context"
+	"time"
+
+	b "bridge/content/bob"
+
 	"github.com/aarondl/opt/omit"
 	"github.com/google/uuid"
 	"github.com/stephenafamo/bob"
-	"time"
 )
 
 type DatastoreBridgeRequest struct{}

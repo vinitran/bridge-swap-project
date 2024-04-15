@@ -1,10 +1,12 @@
 package main
 
 import (
-	"bridge/config"
-	"bridge/context"
 	"embed"
 	"fmt"
+
+	"bridge/config"
+	"bridge/context"
+
 	"github.com/pressly/goose/v3"
 	"github.com/urfave/cli/v2"
 )

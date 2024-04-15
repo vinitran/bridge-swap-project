@@ -1,14 +1,16 @@
 package ethereum
 
 import (
-	"bridge/content/bob"
 	"context"
 	"fmt"
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
 	"math/big"
 	"strings"
 	"time"
+
+	"bridge/content/bob"
+
+	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 func (e *Ethereum) getEvents(msg chan bob.Transaction, contract common.Address) {

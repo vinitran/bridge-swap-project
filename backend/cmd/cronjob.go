@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+	"time"
+
 	"bridge/config"
 	"bridge/content/bob"
 	"bridge/context"
 	"github.com/urfave/cli/v2"
-	"log"
-	"time"
 )
 
 func beforeStartCronjob(c *cli.Context) error {

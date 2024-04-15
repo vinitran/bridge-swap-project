@@ -3,11 +3,12 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"log"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
-	"log"
 )
 
 // NewSQLDB creates a new SQL DB
@@ -25,7 +26,6 @@ func NewSQLDB(cfg DatabaseConfig) *bun.DB {
 
 // NewRedis creates a new REDIS DB
 func NewRedis(cfg RedisConfig) *redis.Client {
-	log.Println(cfg)
 	redisAddr := fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)
 	log.Println("redis dns: ", redisAddr)
 

@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	backend "bridge"
 	"bridge/config"
 	"github.com/urfave/cli/v2"
-	"log"
-	"os"
 )
 
 const (

@@ -1,14 +1,16 @@
 package config_test
 
 import (
-	"bridge/config"
 	"flag"
-	"github.com/stretchr/testify/require"
-	"github.com/urfave/cli/v2"
 	"os"
 	"reflect"
 	"strings"
 	"testing"
+
+	"bridge/config"
+
+	"github.com/stretchr/testify/require"
+	"github.com/urfave/cli/v2"
 )
 
 func Test_Defaults(t *testing.T) {
@@ -59,7 +61,7 @@ func Test_Defaults(t *testing.T) {
 	defer func() {
 		require.NoError(t, os.Remove(file.Name()))
 	}()
-	require.NoError(t, os.WriteFile(file.Name(), []byte("{}"), 0600))
+	require.NoError(t, os.WriteFile(file.Name(), []byte("{}"), 0o600))
 
 	flagSet := flag.NewFlagSet("", flag.PanicOnError)
 	flagSet.String(config.FlagEnvironment, "development", "")

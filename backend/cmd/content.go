@@ -1,16 +1,18 @@
 package main
 
 import (
-	"bridge/config"
-	"bridge/content"
-	"bridge/context"
 	"fmt"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-	"github.com/urfave/cli/v2"
 	"log"
 	"strings"
 	"time"
+
+	"bridge/config"
+	"bridge/content"
+	"bridge/context"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/urfave/cli/v2"
 )
 
 func beforeStartApiServer(c *cli.Context) error {

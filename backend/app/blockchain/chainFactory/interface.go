@@ -1,11 +1,12 @@
 package chainFactory
 
 import (
-	"bridge/content/bob"
 	"fmt"
 	"math/big"
 	"os"
 	"strconv"
+
+	"bridge/content/bob"
 )
 
 type Chain struct {

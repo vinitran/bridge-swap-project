@@ -1,14 +1,19 @@
 package content
 
 import (
-	"bridge/content/bob"
-	"bridge/content/datastore"
 	"context"
 	"database/sql"
-	"github.com/gin-gonic/gin"
 	"log"
-	"math/big"
 	"strings"
+
+	"bridge/util"
+
+	"bridge/content/bob"
+	"bridge/content/datastore"
+	"bridge/etherman"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/gin-gonic/gin"
 )
 
 type BridgePayload struct {
@@ -21,16 +26,16 @@ type BridgePayload struct {
 
 func (v *V1Router) bridge(c *gin.Context) {
 	ctx := context.Background()
-	var auth BridgePayload
-	err := c.BindJSON(&auth)
+	var payload BridgePayload
+	err := c.BindJSON(&payload)
 	if err != nil {
 		responseErrUnauthorized(c)
 		return
 	}
-	auth.TokenAddress = strings.ToLower(auth.TokenAddress)
-	auth.UserAddress = strings.ToLower(auth.UserAddress)
+	payload.TokenAddress = strings.ToLower(payload.TokenAddress)
+	payload.UserAddress = strings.ToLower(payload.UserAddress)
 
-	if auth.OutChain == auth.InChain {
+	if payload.OutChain == payload.InChain {
 		responseFailureWithMessage(c, "invalid input and output chainId")
 		return
 	}
@@ -38,8 +43,8 @@ func (v *V1Router) bridge(c *gin.Context) {
 	tokenIn, err := bob.Tokens(
 		ctx,
 		SQLRepository(),
-		bob.SelectWhere.Tokens.Address.EQ(auth.TokenAddress),
-		bob.SelectWhere.Tokens.ChainID.EQ(auth.InChain)).One()
+		bob.SelectWhere.Tokens.Address.EQ(payload.TokenAddress),
+		bob.SelectWhere.Tokens.ChainID.EQ(payload.InChain)).One()
 	if err != nil {
 		responseFailureWithMessage(c, "invalid input token")
 		return
@@ -49,33 +54,33 @@ func (v *V1Router) bridge(c *gin.Context) {
 		ctx,
 		SQLRepository(),
 		bob.SelectWhere.Tokens.Name.EQ(tokenIn.Name),
-		bob.SelectWhere.Tokens.ChainID.EQ(auth.OutChain)).One()
+		bob.SelectWhere.Tokens.ChainID.EQ(payload.OutChain)).One()
 	if err != nil {
 		responseFailureWithMessage(c, "invalid output token")
 		return
 	}
 
-	amountInPoolTokenOut, err := ChainRepository(auth.OutChain).GetTokenInPool(tokenOut.Address)
+	etherClient, err := etherman.NewClientFromChainId(util.ToUint64(payload.InChain), ConfigRepository().Etherman)
+	if err != nil {
+		responseFailureWithMessage(c, "client not found")
+		return
+	}
+
+	amountInPoolTokenOut, err := etherClient.AmountTokenInBridgePool(common.HexToAddress(tokenOut.Address))
 	if err != nil {
 		responseErrInternalServerError(c)
 		return
 	}
 
-	amountIn, ok := big.NewInt(0).SetString(auth.Amount, 10)
-	if !ok {
-		responseErrInternalServerError(c)
-		return
-	}
-
 	// require amount output token in pool must be grater than amount input token
-	if amountIn.Cmp(amountInPoolTokenOut) == 1 {
+	if util.ToBigInt(payload.Amount).Cmp(amountInPoolTokenOut) == 1 {
 		responseFailureWithMessage(c, "amount output token is not enough")
 		return
 	}
 
 	dataStr := datastore.DatastoreBridgeRequest{}
 
-	inRequest, err := dataStr.IsInRequest(ctx, SQLRepository(), auth.UserAddress)
+	inRequest, err := dataStr.IsInRequest(ctx, SQLRepository(), payload.UserAddress)
 	if inRequest == true {
 		responseFailureWithMessage(c, "you have transaction in progress, please waiting")
 		return
@@ -83,11 +88,11 @@ func (v *V1Router) bridge(c *gin.Context) {
 
 	tx, err := SQLRepository().BeginTx(ctx, &sql.TxOptions{})
 	bridgeRq, err := dataStr.Insert(ctx, tx, &bob.BridgeRequest{
-		InputChain:  auth.InChain,
-		OutputChain: auth.OutChain,
-		RawAmount:   auth.Amount,
-		Token:       auth.TokenAddress,
-		UserAddress: auth.UserAddress,
+		InputChain:  payload.InChain,
+		OutputChain: payload.OutChain,
+		RawAmount:   payload.Amount,
+		Token:       payload.TokenAddress,
+		UserAddress: payload.UserAddress,
 	})
 	if err != nil {
 		log.Println(err)

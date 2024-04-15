@@ -1,8 +1,10 @@
 package datastore
 
 import (
-	b "bridge/content/bob"
 	"context"
+
+	b "bridge/content/bob"
+
 	"github.com/aarondl/opt/omit"
 	"github.com/google/uuid"
 	"github.com/stephenafamo/bob"

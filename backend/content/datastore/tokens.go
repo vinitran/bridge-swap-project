@@ -1,9 +1,11 @@
 package datastore
 
 import (
-	b "bridge/content/bob"
 	"context"
 	"fmt"
+
+	b "bridge/content/bob"
+
 	"github.com/stephenafamo/bob"
 )
 

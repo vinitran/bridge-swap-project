@@ -1,17 +1,19 @@
 package context
 
 import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+	"strings"
+
 	"bridge/app/blockchain"
 	"bridge/app/blockchain/chainFactory"
 	"bridge/config"
 	"bridge/db"
-	"context"
-	"fmt"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/uptrace/bun"
-	"log"
-	"os"
-	"strings"
 )
 
 const (
@@ -48,7 +50,7 @@ func SetContextSQL(cfg db.DatabaseConfig) {
 	client := db.NewSQLDB(cfg)
 	err := client.Ping()
 	if err != nil {
-		log.Fatal("Set context SQL error", err)
+		log.Fatal("Set context SQL error ", err)
 		return
 	}
 	ctx = context.WithValue(ctx, contextSQLRepository, client)
