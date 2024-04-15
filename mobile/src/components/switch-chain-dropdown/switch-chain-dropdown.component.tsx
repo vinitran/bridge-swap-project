@@ -6,6 +6,7 @@ import { Icon } from '../icon/icon.component';
 import { useTheme } from '../../hook/theme.hook';
 import { AppTheme } from '../../theme/theme';
 import { Chain } from 'viem';
+import { chainImages } from '../../const/chain-image.const';
 
 interface RenderItemProps {
   item: Chain;
@@ -41,7 +42,7 @@ export const SwitchChainDrodown = () => {
     ({ item }: RenderItemProps) => {
       return (
         <TouchableOpacity style={styles.modalItemContainer} onPress={() => onSwitchChange(item)}>
-          <Image />
+          <Image src={chainImages[item.id]} style={styles.image} resizeMode="cover" />
           <Text style={styles.modalItemText}>{item.name}</Text>
         </TouchableOpacity>
       );
@@ -52,6 +53,7 @@ export const SwitchChainDrodown = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={toggleModalVisible} style={styles.dropdown}>
+        <Image src={chainImages[chain.id]} style={styles.image} resizeMode="cover" />
         <Text style={styles.text} ellipsizeMode="tail" numberOfLines={1}>
           {chain.name}
         </Text>
@@ -77,7 +79,7 @@ const initStyles = (theme: AppTheme) => {
       borderColor: theme.primaryColor,
       borderWidth: 1,
       paddingHorizontal: theme.spaceS,
-      paddingVertical: theme.spaceS,
+      // paddingVertical: theme.spaceS,
       justifyContent: 'space-between',
       maxWidth: '50%',
       backgroundColor: theme.primaryColor,
@@ -130,6 +132,12 @@ const initStyles = (theme: AppTheme) => {
     },
     flatList: {
       width: '100%',
+    },
+    image: {
+      width: theme.spaceXXL,
+      height: theme.spaceXXL,
+      borderRadius: theme.radiusCircle,
+      marginRight: theme.spaceXS,
     },
   });
 };

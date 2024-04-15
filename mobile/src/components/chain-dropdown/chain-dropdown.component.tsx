@@ -13,6 +13,7 @@ import { Icon } from '../icon/icon.component';
 import { useTheme } from '../../hook/theme.hook';
 import { AppTheme } from '../../theme/theme';
 import { Chain } from 'viem';
+import { chainImages } from '../../const/chain-image.const';
 
 interface ChainDropdownProps {
   chainList: Chain[];
@@ -41,7 +42,7 @@ export const ChainDrodown = ({ chainList, value, onChangeChain }: ChainDropdownP
     ({ item }: RenderItemProps) => {
       return (
         <TouchableOpacity style={styles.modalItemContainer} onPress={() => onPressItem(item)}>
-          <Image />
+          <Image src={chainImages[item.id]} style={styles.image} resizeMode="cover" />
           <Text style={styles.modalItemText}>{item.name}</Text>
         </TouchableOpacity>
       );
@@ -52,6 +53,7 @@ export const ChainDrodown = ({ chainList, value, onChangeChain }: ChainDropdownP
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={toggleModalVisible} style={styles.dropdown}>
+        <Image src={chainImages[value.id]} style={styles.image} resizeMode="cover" />
         <Text style={styles.text} ellipsizeMode="tail" numberOfLines={1}>
           {value.name}
         </Text>
@@ -145,6 +147,12 @@ const initStyles = (theme: AppTheme) => {
     },
     flatList: {
       width: '100%',
+    },
+    image: {
+      width: theme.spaceXXL,
+      height: theme.spaceXXL,
+      borderRadius: theme.radiusCircle,
+      backgroundColor: theme.backgroundColor,
     },
   });
 };
