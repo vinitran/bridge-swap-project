@@ -1,119 +1,82 @@
 import axios from 'axios';
 import { ISeriesApi, Time, createChart } from 'lightweight-charts';
 import { Interval } from '../../const/interval.const';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { chartProperties } from './lightweight-charts.config';
 
 export const CoinDetailMarketChart = ({
   symbol,
   interval = Interval._1m,
   limit = 200,
 }: {
-  symbol: string | undefined;
+  symbol?: string;
   interval?: Interval;
   limit?: number;
 }) => {
   let candleSeries: ISeriesApi<'Candlestick', Time> | undefined = undefined;
-  let timerMarketChart: NodeJS.Timer;
+  const domElement = useRef<HTMLDivElement>(null);
 
-  // only use in unmount component
   useEffect(() => {
-    return () => {
-      if (timerMarketChart) {
-        clearInterval(timerMarketChart);
-      }
-    };
-  }, []);
+    candleSeries = undefined;
+    if (domElement.current?.firstChild)
+      domElement.current?.removeChild(domElement.current.firstChild);
 
-  
-  useEffect(() => {
-    if (timerMarketChart) clearInterval(timerMarketChart);
+    const timerInterval = setInterval(async () => {
+      console.log('props:', [symbol, interval, limit]);
+      await syncMarketChart(symbol, interval, limit);
+    }, 2000);
 
-    timerMarketChart = setInterval(() => {
-      syncMarketChart(false);
-    }, 1000);
+    return () => clearInterval(timerInterval);
   }, [symbol, interval, limit]);
 
-  const initChart = () => {
-    const domElement = document.getElementById('coin-detail-market-chart');
-    if (
-      symbol &&
-      candleSeries === undefined &&
-      domElement &&
-      !domElement.hasChildNodes()
-    ) {
-      console.log('into1');
-      const chartProperties = {
-        layout: {
-          background: {
-            // type: 'solid',
-            color: '#0F172A',
-          },
-          // lineColor: '#2B2B43',
-          textColor: '#D9D9D9',
-        },
-        watermark: {
-          color: 'rgba(0, 0, 0, 0)',
-        },
-        crosshair: {
-          // color: '#758696',
-        },
-        grid: {
-          vertLines: {
-            color: '#2B2B43',
-          },
-          horzLines: {
-            color: '#363C4E',
-          },
-        },
-        timeScale: {
-          timeVisible: true,
-          secondsVisible: false,
-        },
-      };
-      const chart = createChart(domElement, chartProperties);
-      candleSeries = chart.addCandlestickSeries();
-      // syncMarketChart(false)
-
-      timerMarketChart = setInterval(() => {
-        syncMarketChart(false);
-      }, 1000);
-    }
+  const syncMarketChart = async (
+    symbol: string | undefined,
+    interval: string,
+    limit: number,
+  ) => {
+    console.log(
+      `start syncMarketChart: symbol=${symbol?.toUpperCase()}USDT&interval=${interval}&limit=${limit}`,
+    );
+    await axios(
+      `https://api.binance.com/api/v3/klines?symbol=${symbol?.toUpperCase()}USDT&interval=${interval}&limit=${limit}`,
+    )
+      .then((res: any) => {
+        const marketChartData = res.data.map((d: any) => {
+          return {
+            time: d[0] / 1000,
+            open: parseFloat(d[1]),
+            high: parseFloat(d[2]),
+            low: parseFloat(d[3]),
+            close: parseFloat(d[4]),
+          };
+        });
+        if (marketChartData.length > 0 && !candleSeries && domElement.current) {
+          const chart = createChart(domElement.current, chartProperties);
+          candleSeries = chart.addCandlestickSeries();
+          candleSeries.setData(marketChartData);
+        } else if (marketChartData.length > 0 && candleSeries) {
+          candleSeries.update(marketChartData[marketChartData.length - 1]);
+        }
+      })
+      .catch(err => console.log(err));
   };
-
-  const syncMarketChart = async (isUpdateChart: boolean) => {
-    console.log(`syncMarketChart: https://api.binance.com/api/v3/klines?symbol=${symbol?.toUpperCase()}USDT&interval=${interval}&limit=${limit}`)
-    if (candleSeries) {
-      await axios(
-        `https://api.binance.com/api/v3/klines?symbol=${symbol?.toUpperCase()}USDT&interval=${interval}&limit=${limit}`,
-      )
-        .then((res: any) => {
-          const cdata = res.data.map((d: any) => {
-            return {
-              time: d[0] / 1000,
-              open: parseFloat(d[1]),
-              high: parseFloat(d[2]),
-              low: parseFloat(d[3]),
-              close: parseFloat(d[4]),
-            };
-          });
-          if (candleSeries) {
-            if (isUpdateChart) {
-              candleSeries.update(cdata);
-            } else {
-              candleSeries.setData(cdata);
-            }
-            console.log('cdata:', cdata);
-          }
-        })
-        .catch(err => console.log(err));
-    }
-  };
-
-  initChart();
 
   return (
-    <div className="flex flex-row w-full h-full">
-      <div id="coin-detail-market-chart" className="w-full h-full"></div>
-    </div>
+    <>
+      <div className="relative w-full h-full">
+        <div
+          id="coin-detail-market-chart"
+          className={'w-full h-full'}
+          ref={domElement}
+        ></div>
+        <div
+          className={`top-0 right-0 bottom-0 left-0  flex items-center justify-center absolute ${
+            candleSeries ? 'hidden' : 'absolute'
+          }`}
+        >
+          loading...
+        </div>
+      </div>
+    </>
   );
 };
