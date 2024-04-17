@@ -37,7 +37,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/main blockchain"
+      - "/app/main blockchain --cfg /app/config.toml"
 
   crawler:
     container_name: crawler
@@ -73,11 +73,10 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/main cronjob"
+      - "/app/main cronjob --cfg /app/config.toml"
 
-  migrate:
-    container_name: migrate
-    restart: unless-stopped
+  migrate-up:
+    container_name: migrate-up
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -94,6 +93,25 @@ services:
       - "/bin/sh"
       - "-c"
       - "/app/main migration --action up --cfg /app/config.toml"
+
+  migrate-down:
+    container_name: migrate-up
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - bridge
+    volumes:
+      - ./backend/config/test.config.toml:/app/config.toml
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/main migration --action down --cfg /app/config.toml"
 
   postgres:
     container_name: bridge_postgres

@@ -2,6 +2,12 @@ package datastore
 
 import (
 	"context"
+	"time"
+
+	"github.com/stephenafamo/bob"
+	"github.com/stephenafamo/bob/dialect/psql"
+	"github.com/stephenafamo/bob/dialect/psql/um"
+	"github.com/stephenafamo/scan"
 
 	b "bridge/content/bob"
 
@@ -33,8 +39,23 @@ func (ds *DatastoreTransaction) FindByUID(ctx context.Context, id uuid.UUID) (*b
 	return b.FindTransaction(ctx, ds.bobExecutor, id)
 }
 
-func (ds *DatastoreTransaction) Update(ctx context.Context, tx *b.Transaction) error {
-	_, err := b.TransactionsTable.Update(ctx, ds.bobExecutor, tx)
+func (ds *DatastoreTransaction) Update(ctx context.Context, id uuid.UUID, params *b.TransactionSetter) error {
+	params.UpdatedAt = omit.From(time.Now())
+
+	builder := psql.Update(
+		um.Table(b.TransactionsTable.Name(ctx)),
+		um.Where(b.TransactionColumns.ID.EQ(psql.Arg(id))),
+		um.Returning("*"),
+	)
+
+	ks, vs := PrepareSetterMap(ctx, params)
+	for i, x := range ks {
+		builder.Apply(
+			um.Set(x).ToArg(vs[i]),
+		)
+	}
+
+	_, err := bob.One(ctx, ds.bobExecutor, builder, scan.StructMapper[*b.Transaction]())
 	return err
 }
 

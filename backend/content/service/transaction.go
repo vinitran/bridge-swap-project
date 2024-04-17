@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/aarondl/opt/omit"
+
 	"bridge/content"
 	b "bridge/content/bob"
 	"bridge/db"
@@ -59,13 +61,7 @@ func (service *ServiceTransaction) FindByUID(ctx context.Context, id uuid.UUID) 
 }
 
 func (service *ServiceTransaction) SetCompleteTransaction(ctx context.Context, id uuid.UUID) error {
-	tx, err := db.UseCache(ctx, service.cache, cacheKeyTransactionByID(id.String()), 12*time.Second, func() (*b.Transaction, error) {
-		return service.datastoreTransaction.FindByUID(ctx, id)
+	return service.datastoreTransaction.Update(ctx, id, &b.TransactionSetter{
+		IsComplete: omit.From(true),
 	})
-	if err != nil {
-		return err
-	}
-
-	tx.IsComplete = true
-	return service.datastoreTransaction.Update(ctx, tx)
 }

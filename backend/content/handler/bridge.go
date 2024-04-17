@@ -111,3 +111,50 @@ func (group *GroupBridge) Exec(c echo.Context) error {
 	responseSuccess(c, bridgeRq.ID.String())
 	return nil
 }
+
+func cacheBridgeRequest(s any) string {
+	return fmt.Sprintf("%v", s)
+}
+
+//var inProcess *bob.BridgeRequestSetter
+//	err = db.GetCache(
+//		ctx,
+//		cache,
+//		cacheBridgeRequest(
+//			fmt.Sprintf(
+//				"%s%s%s",
+//				payload.UserAddress.GetOrZero(),
+//				payload.TokenAddress.GetOrZero(),
+//				payload.InChain.GetOrZero(),
+//			),
+//		),
+//		&inProcess,
+//	)
+//	if err != nil {
+//		responseFailureWithMessage(c, "you have transaction in progress, please waiting")
+//		return err
+//	}
+//
+//	if inProcess != nil {
+//		responseFailureWithMessage(c, "you have transaction in progress, please waiting")
+//		return err
+//	}
+//
+//	db.SetCache(ctx,
+//		cache,
+//		cacheBridgeRequest(fmt.Sprintf(
+//			"%s%s%s",
+//			payload.UserAddress.GetOrZero(),
+//			payload.TokenAddress.GetOrZero(),
+//			payload.InChain.GetOrZero(),
+//		),
+//		),
+//		&bob.BridgeRequestSetter{
+//			InputChain:  payload.InChain,
+//			OutputChain: payload.OutChain,
+//			RawAmount:   payload.Amount,
+//			Token:       payload.TokenAddress,
+//			UserAddress: payload.UserAddress,
+//		},
+//		10*time.Minute,
+//	)

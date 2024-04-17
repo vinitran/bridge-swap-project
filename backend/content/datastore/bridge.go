@@ -2,9 +2,13 @@ package datastore
 
 import (
 	"context"
-	"github.com/stephenafamo/bob"
-	"github.com/stephenafamo/bob/dialect/psql/dialect"
 	"time"
+
+	"github.com/stephenafamo/bob"
+	"github.com/stephenafamo/bob/dialect/psql"
+	"github.com/stephenafamo/bob/dialect/psql/dialect"
+	"github.com/stephenafamo/bob/dialect/psql/dm"
+	"github.com/stephenafamo/scan"
 
 	b "bridge/content/bob"
 
@@ -49,13 +53,31 @@ func (ds *DatastoreBridge) FindBy(ctx context.Context, mods bob.Mod[*dialect.Sel
 }
 
 func (ds *DatastoreBridge) Delete(ctx context.Context, rq *b.BridgeRequest) error {
-	_, err := b.BridgeRequestsTable.Delete(ctx, ds.bobExecutor, rq)
-	return err
+	builder := psql.Delete(
+		dm.From(b.BridgeRequestsTable.Name(ctx)),
+		dm.Where(b.BridgeRequestColumns.ID.EQ(psql.Arg(rq.ID))),
+		dm.Returning("*"),
+	)
+
+	_, err := bob.One(ctx, ds.bobExecutor, builder, scan.StructMapper[*b.BridgeRequest]())
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (ds *DatastoreBridge) DeleteExpired(ctx context.Context, rq b.BridgeRequestSlice) error {
-	_, err := b.BridgeRequestsTable.DeleteMany(ctx, ds.bobExecutor, rq...)
-	return err
+func (ds *DatastoreBridge) FindAndDelete(ctx context.Context, mods bob.Mod[*dialect.DeleteQuery]) error {
+	builder := psql.Delete(
+		dm.From(b.BridgeRequestsTable.Name(ctx)),
+		mods,
+		dm.Returning("*"),
+	)
+
+	_, err := bob.All(ctx, ds.bobExecutor, builder, scan.StructMapper[*b.BridgeRequest]())
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func NewDatastoreBridge(pool PGXPool) (*DatastoreBridge, error) {

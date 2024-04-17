@@ -32,6 +32,23 @@ func UseCache[T any](ctx context.Context, cash Cache, key string, ttl time.Durat
 	return v, nil
 }
 
+func SetCache(ctx context.Context, cash Cache, key string, value any, ttl time.Duration) error {
+	err := cash.Set(ctx, key, value, ttl)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetCache[T any](ctx context.Context, cash Cache, key string) (T, error) {
+	var v T
+	err := cash.Get(ctx, key, &v)
+	if err != cache.ErrCacheMiss {
+		return v, err
+	}
+	return v, nil
+}
+
 type CacheRedis struct {
 	instance *cache.Cache
 }
