@@ -1,14 +1,16 @@
 package main
 
 import (
-	"bridge/config"
 	"database/sql"
 	"embed"
 	"errors"
 	"fmt"
+	"log"
+
+	"bridge/config"
+
 	"github.com/pressly/goose/v3"
 	"github.com/samber/do"
-	"log"
 
 	_ "github.com/lib/pq"
 	"github.com/urfave/cli/v2"
