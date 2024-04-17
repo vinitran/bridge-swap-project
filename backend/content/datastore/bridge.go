@@ -2,6 +2,8 @@ package datastore
 
 import (
 	"context"
+	"github.com/stephenafamo/bob"
+	"github.com/stephenafamo/bob/dialect/psql/dialect"
 	"time"
 
 	b "bridge/content/bob"
@@ -42,8 +44,17 @@ func (ds *DatastoreBridge) FindByTx(ctx context.Context, event *b.Transaction) (
 		b.SelectWhere.BridgeRequests.IsComplete.EQ(false)).One()
 }
 
+func (ds *DatastoreBridge) FindBy(ctx context.Context, mods bob.Mod[*dialect.SelectQuery]) (b.BridgeRequestSlice, error) {
+	return b.BridgeRequestsTable.Query(ctx, ds.bobExecutor, mods).All()
+}
+
 func (ds *DatastoreBridge) Delete(ctx context.Context, rq *b.BridgeRequest) error {
 	_, err := b.BridgeRequestsTable.Delete(ctx, ds.bobExecutor, rq)
+	return err
+}
+
+func (ds *DatastoreBridge) DeleteExpired(ctx context.Context, rq b.BridgeRequestSlice) error {
+	_, err := b.BridgeRequestsTable.DeleteMany(ctx, ds.bobExecutor, rq...)
 	return err
 }
 
