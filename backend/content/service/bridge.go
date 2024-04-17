@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"fmt"
+	"log"
+	"time"
 
 	"bridge/content"
 	b "bridge/content/bob"
@@ -78,4 +80,14 @@ func (service *ServiceBridge) SetComplete(ctx context.Context, requestId uuid.UU
 	}
 
 	return service.datastoreBridge.Delete(ctx, bridgeRq)
+}
+
+func (service *ServiceBridge) DeleteExpired(ctx context.Context, t time.Time) error {
+	bridgeRq, err := service.datastoreBridge.FindBy(ctx, b.SelectWhere.BridgeRequests.CreatedAt.LTE(t))
+	if err != nil {
+		return err
+	}
+	log.Println(bridgeRq)
+
+	return service.datastoreBridge.DeleteExpired(ctx, bridgeRq)
 }
