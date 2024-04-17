@@ -1,46 +1,66 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
 	"bridge/config"
+	"bridge/content/service"
+
+	"github.com/google/uuid"
+	"github.com/redis/go-redis/v9"
+	"github.com/samber/do"
 
 	"bridge/etherman"
 	"bridge/util"
 
 	"github.com/ethereum/go-ethereum/common"
 
-	"bridge/content/datastore"
-	"bridge/context"
-
 	"github.com/urfave/cli/v2"
 )
 
-func beforeStartBlockchain(c *cli.Context) error {
-	cfg, err := config.Load(c)
+func startBlockchain(c *cli.Context) error {
+	log.Println("start blockchain")
+
+	container, ok := c.App.Metadata["container"].(*do.Injector)
+	if !ok {
+		return errors.New("invalid service container")
+	}
+
+	cfg, err := do.Invoke[*config.Config](container)
 	if err != nil {
 		return err
 	}
-	context.SetContextConfig(cfg)
-	context.SetContextSQL(cfg.Database)
-	context.SetContextRedisClient(cfg.Redis)
-	context.SetChainClient()
-	return nil
-}
 
-func startBlockchain(c *cli.Context) error {
-	eventSub := RedisRepository().Subscribe(ctx, redisNewDepositEvent)
+	dbRedis, err := do.Invoke[*redis.Client](container)
+	if err != nil {
+		return err
+	}
+
+	serviceBridge, err := do.Invoke[*service.ServiceBridge](container)
+	if err != nil {
+		return err
+	}
+
+	serviceTransaction, err := do.Invoke[*service.ServiceTransaction](container)
+	if err != nil {
+		return err
+	}
+
+	serviceToken, err := do.Invoke[*service.ServiceToken](container)
+	if err != nil {
+		return err
+	}
+
+	eventSub := dbRedis.Subscribe(ctx, redisNewDepositEvent)
 	defer eventSub.Close()
 
 	eventCh := eventSub.Channel()
-	bridgeStr := datastore.DatastoreBridgeRequest{}
-	transactionStr := datastore.DatastoreTransaction{}
-	tokenStr := datastore.DatastoreToken{}
 
 	go func() {
 		for msg := range eventCh {
-			bridgeRq, err := bridgeStr.CheckValidForWithdrawal(ctx, SQLRepository(), msg.Payload)
+			bridgeRq, err := serviceBridge.CheckValidForWithdrawal(ctx, uuid.MustParse(msg.Payload))
 			if err != nil {
 				log.Println("blockchain: ", err)
 				continue
@@ -51,13 +71,13 @@ func startBlockchain(c *cli.Context) error {
 				continue
 			}
 
-			token, err := tokenStr.FindTokenInOutputChain(ctx, SQLRepository(), bridgeRq.Token, bridgeRq.InputChain, bridgeRq.OutputChain)
+			token, err := serviceToken.FindTokenInOutputChain(ctx, bridgeRq.Token, bridgeRq.InputChain, bridgeRq.OutputChain)
 			if err != nil {
 				log.Println(fmt.Sprintf("event id %s: %e", msg.Payload, err))
 				continue
 			}
 
-			etherClient, err := etherman.NewClientFromChainId(util.ToUint64(token.ChainID), Config().Etherman)
+			etherClient, err := etherman.NewClientFromChainId(util.ToUint64(token.ChainID), cfg.Etherman)
 			if err != nil {
 				log.Println(fmt.Sprintf("event id %s: %e", msg.Payload, err))
 				return
@@ -69,13 +89,13 @@ func startBlockchain(c *cli.Context) error {
 				return
 			}
 
-			err = bridgeStr.SetComplete(ctx, SQLRepository(), bridgeRq.ID.String())
+			err = serviceBridge.SetComplete(ctx, bridgeRq.ID)
 			if err != nil {
 				log.Println(fmt.Sprintf("event id %s: %e", msg.Payload, err))
 				continue
 			}
 
-			err = transactionStr.SetComplete(ctx, SQLRepository(), msg.Payload)
+			err = serviceTransaction.SetCompleteTransaction(ctx, uuid.MustParse(msg.Payload))
 			if err != nil {
 				log.Println(fmt.Sprintf("event id %s: %e", msg.Payload, err))
 				continue

@@ -8,7 +8,7 @@ Environment = "development" # "production" or "development"
 	Password = "123456"
 	Name = "postgres"
 	Host = "localhost"
-	Port = "5432"
+	Port = "5433"
 	MaxConns = 200
 [Redis]
 	Password = ""

@@ -7,12 +7,14 @@ import (
 
 	"github.com/aarondl/opt/omit"
 	"github.com/google/uuid"
-	"github.com/stephenafamo/bob"
 )
 
-type DatastoreTransaction struct{}
+type DatastoreTransaction struct {
+	pool        PGXPool
+	bobExecutor BobExecutor
+}
 
-func (ds *DatastoreTransaction) Insert(ctx context.Context, exec bob.Executor, params *b.Transaction) (*b.Transaction, error) {
+func (ds *DatastoreTransaction) Create(ctx context.Context, params *b.Transaction) (*b.Transaction, error) {
 	paramsSetter := b.TransactionSetter{
 		ID:         omit.From(uuid.New()),
 		User:       omit.From(params.User),
@@ -24,20 +26,18 @@ func (ds *DatastoreTransaction) Insert(ctx context.Context, exec bob.Executor, p
 		CreatedAt:  omit.From(params.CreatedAt),
 		UpdatedAt:  omit.From(params.UpdatedAt),
 	}
-	return b.TransactionsTable.Insert(ctx, exec, &paramsSetter)
+	return b.TransactionsTable.Insert(ctx, ds.bobExecutor, &paramsSetter)
 }
 
-func (ds *DatastoreTransaction) FindById(ctx context.Context, exec bob.Executor, id string) (*b.Transaction, error) {
-	return b.FindTransaction(ctx, exec, uuid.MustParse(id))
+func (ds *DatastoreTransaction) FindByUID(ctx context.Context, id uuid.UUID) (*b.Transaction, error) {
+	return b.FindTransaction(ctx, ds.bobExecutor, id)
 }
 
-func (ds *DatastoreTransaction) SetComplete(ctx context.Context, exec bob.Executor, txId string) error {
-	tx, err := b.FindTransaction(ctx, exec, uuid.MustParse(txId))
-	if err != nil {
-		return err
-	}
-	tx.IsComplete = true
-
-	_, err = b.TransactionsTable.Update(ctx, exec, tx)
+func (ds *DatastoreTransaction) Update(ctx context.Context, tx *b.Transaction) error {
+	_, err := b.TransactionsTable.Update(ctx, ds.bobExecutor, tx)
 	return err
+}
+
+func NewDatastoreTransaction(pool PGXPool) (*DatastoreTransaction, error) {
+	return &DatastoreTransaction{pool, &BobExecutorPgx{pool}}, nil
 }
