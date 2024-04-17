@@ -1,9 +1,9 @@
-package content
+package handler
 
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 )
 
 type Response struct {
@@ -12,34 +12,34 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
-func responseSuccess(c *gin.Context, data interface{}) {
+func responseSuccess(c echo.Context, data interface{}) {
 	c.JSON(http.StatusOK, Response{Code: http.StatusOK, Data: data})
 }
 
-func responseFailureWithMessage(c *gin.Context, message string) {
+func responseFailureWithMessage(c echo.Context, message string) {
 	c.JSON(http.StatusOK, Response{Code: http.StatusBadRequest, Data: true, Message: message})
 }
 
-func responseSuccessWithMessage(c *gin.Context, message string) {
+func responseSuccessWithMessage(c echo.Context, message string) {
 	c.JSON(http.StatusOK, Response{Code: http.StatusOK, Data: true, Message: message})
 }
 
-func responseErrUnauthorized(c *gin.Context) {
+func responseErrUnauthorized(c echo.Context) {
 	c.JSON(http.StatusUnauthorized, Response{Code: http.StatusUnauthorized, Message: http.StatusText(http.StatusUnauthorized)})
 }
 
-func responseErrValidation(c *gin.Context, message string) {
+func responseErrValidation(c echo.Context, message string) {
 	c.JSON(http.StatusUnprocessableEntity, Response{Code: http.StatusUnprocessableEntity, Message: message})
 }
 
-func responseErrInternalServerError(c *gin.Context) {
+func responseErrInternalServerError(c echo.Context) {
 	c.JSON(http.StatusInternalServerError, Response{Code: http.StatusInternalServerError, Message: http.StatusText(http.StatusInternalServerError)})
 }
 
-func responseErrInternalServerErrorWithDetail(c *gin.Context, message string) {
+func responseErrInternalServerErrorWithDetail(c echo.Context, message string) {
 	c.JSON(http.StatusInternalServerError, Response{Code: http.StatusInternalServerError, Message: message})
 }
 
-func responseErrNotFound(c *gin.Context) {
+func responseErrNotFound(c echo.Context) {
 	c.JSON(http.StatusNotFound, Response{Code: http.StatusNotFound, Message: http.StatusText(http.StatusNotFound)})
 }
