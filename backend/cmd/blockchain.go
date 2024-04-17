@@ -91,13 +91,13 @@ func startBlockchain(c *cli.Context) error {
 
 			err = serviceBridge.SetComplete(ctx, bridgeRq.ID)
 			if err != nil {
-				log.Println(fmt.Sprintf("event id %s: %e", msg.Payload, err))
+				log.Println(fmt.Sprintf("2 event id %s: %e", msg.Payload, err))
 				continue
 			}
 
 			err = serviceTransaction.SetCompleteTransaction(ctx, uuid.MustParse(msg.Payload))
 			if err != nil {
-				log.Println(fmt.Sprintf("event id %s: %e", msg.Payload, err))
+				log.Println(fmt.Sprintf("3 event id %s: %e", msg.Payload, err))
 				continue
 			}
 		}

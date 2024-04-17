@@ -2,6 +2,7 @@ package content
 
 import (
 	"context"
+
 	"github.com/stephenafamo/bob"
 	"github.com/stephenafamo/bob/dialect/psql/dialect"
 
@@ -17,7 +18,7 @@ type DatastoreBridge interface {
 	FindByTx(ctx context.Context, event *b.Transaction) (*b.BridgeRequest, error)
 	FindBy(ctx context.Context, mods bob.Mod[*dialect.SelectQuery]) (b.BridgeRequestSlice, error)
 	Delete(ctx context.Context, rq *b.BridgeRequest) error
-	DeleteExpired(ctx context.Context, rq b.BridgeRequestSlice) error
+	FindAndDelete(ctx context.Context, mods bob.Mod[*dialect.DeleteQuery]) error
 }
 
 type DatastoreToken interface {
@@ -29,5 +30,5 @@ type DatastoreToken interface {
 type DatastoreTransaction interface {
 	Create(ctx context.Context, params *b.Transaction) (*b.Transaction, error)
 	FindByUID(ctx context.Context, id uuid.UUID) (*b.Transaction, error)
-	Update(ctx context.Context, tx *b.Transaction) error
+	Update(ctx context.Context, id uuid.UUID, params *b.TransactionSetter) error
 }

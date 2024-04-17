@@ -1,12 +1,14 @@
 package main
 
 import (
-	"bridge/content/service"
 	"errors"
-	"github.com/samber/do"
-	"github.com/urfave/cli/v2"
 	"log"
 	"time"
+
+	"bridge/content/service"
+
+	"github.com/samber/do"
+	"github.com/urfave/cli/v2"
 )
 
 func startCronjob(c *cli.Context) error {
@@ -20,11 +22,9 @@ func startCronjob(c *cli.Context) error {
 		return err
 	}
 
-	timeExpired := time.Now().Add(-10 * time.Minute)
-
 	for {
 		log.Println("asdasd")
-		err := serviceBridge.DeleteExpired(c.Context, timeExpired)
+		err := serviceBridge.DeleteExpired(c.Context)
 		if err != nil {
 			return err
 		}

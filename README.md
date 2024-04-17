@@ -5,6 +5,22 @@
 
 ## Setup
 
+Run all service
+```
+make run
+```
+
+Stop all service
+```
+make stop
+```
+
+Run migrate 
+```
+make run-migrate-up // for up
+make run-migrate-down //dor down
+```
+
 Initialize postgres and redis database:
 
 ```
