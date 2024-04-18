@@ -29,7 +29,7 @@ STOP_POSTGRES := $(DOCKERCOMPOSE) stop $(DOCKERCOMPOSE_POSTGRES) && $(DOCKERCOMP
 STOP_REDIS := $(DOCKERCOMPOSE) stop $(DOCKERCOMPOSE_REDIS) && $(DOCKERCOMPOSE) rm -f $(DOCKERCOMPOSE_REDIS)
 
 .PHONY: run
-run: ## Runs a full node
+run:
 	$(RUN_POSTGRES)
 	$(RUN_REDIS)
 	sleep 1
@@ -39,7 +39,7 @@ run: ## Runs a full node
 	$(RUN_API)
 
 .PHONY: run-build
-run-build: ## Runs a full node
+run-build:
 	$(RUN_POSTGRES)
 	$(RUN_REDIS)
 	sleep 1
@@ -48,9 +48,8 @@ run-build: ## Runs a full node
 	$(RUN_BLOCKCHAIN) --build
 	$(RUN_API) --build
 
-
 .PHONY: stop
-stop: ## Runs a full node
+stop:
 	$(STOP_API)
 	$(STOP_BLOCKCHAIN)
 	$(STOP_CRAWLER)
@@ -58,22 +57,21 @@ stop: ## Runs a full node
 	$(STOP_POSTGRES)
 	$(STOP_REDIS)
 
-
 .PHONY: run-migrate-up
-run-migrate-up: ## Runs a full node
+run-migrate-up:
 	$(RUN_POSTGRES)
 	$(RUN_REDIS)
 	sleep 1
-	$(RUN_MIGRATE_UP)
+	$(RUN_MIGRATE_UP) --build
 
 .PHONY: run-migrate-down
-run-migrate-down: ## Runs a full node
+run-migrate-down:
 	$(RUN_POSTGRES)
 	$(RUN_REDIS)
 	sleep 1
-	$(RUN_MIGRATE_DOWN)
+	$(RUN_MIGRATE_DOWN) --build
 
 .PHONY: run-db
-run-db: ## Runs a full node
+run-db:
 	$(RUN_POSTGRES)
 	$(RUN_REDIS)

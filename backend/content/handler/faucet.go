@@ -50,13 +50,12 @@ func (group *GroupFaucet) Exec(c echo.Context) error {
 
 	isValidToken, err := serviceToken.Exist(ctx, payload.Token.GetOrZero(), payload.ChainId.GetOrZero())
 	if err != nil {
-		log.Println(err)
-		responseFailureWithMessage(c, "invalid token asd")
+		responseFailureWithMessage(c, "invalid token")
 		return err
 	}
 
 	if isValidToken == false {
-		responseFailureWithMessage(c, "invalid token 123")
+		responseFailureWithMessage(c, "invalid token")
 		return err
 	}
 
