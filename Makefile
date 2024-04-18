@@ -38,6 +38,17 @@ run: ## Runs a full node
 	$(RUN_BLOCKCHAIN)
 	$(RUN_API)
 
+.PHONY: run-build
+run-build: ## Runs a full node
+	$(RUN_POSTGRES)
+	$(RUN_REDIS)
+	sleep 1
+	$(RUN_CRONJOB) --build
+	$(RUN_CRAWLER) --build
+	$(RUN_BLOCKCHAIN) --build
+	$(RUN_API) --build
+
+
 .PHONY: stop
 stop: ## Runs a full node
 	$(STOP_API)
