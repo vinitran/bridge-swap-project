@@ -34,6 +34,8 @@ services:
         condition: service_healthy
     networks:
       - bridge
+    volumes:
+      - ./backend/config/test.config.toml:/app/config.toml
     command:
       - "/bin/sh"
       - "-c"
@@ -52,6 +54,8 @@ services:
         condition: service_healthy
     networks:
       - bridge
+    volumes:
+      - ./backend/config/test.config.toml:/app/config.toml
     command:
       - "/bin/sh"
       - "-c"
@@ -70,6 +74,8 @@ services:
         condition: service_healthy
     networks:
       - bridge
+    volumes:
+      - ./backend/config/test.config.toml:/app/config.toml
     command:
       - "/bin/sh"
       - "-c"
