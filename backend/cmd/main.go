@@ -39,7 +39,7 @@ var (
 )
 
 func main() {
-	cfg, err := config.Load("")
+	cfg, err := config.Load("/app/config.toml")
 	if err != nil {
 		log.Fatal(err)
 	}
