@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
+
+	"bridge/content/container"
 
 	backend "bridge"
 	"bridge/config"
@@ -11,10 +14,10 @@ import (
 
 const (
 	appName = "bridge-system"
-	envPath = ".env,.env.local"
 )
 
 var (
+	ctx               = context.Background()
 	configAddressFlag = cli.StringFlag{
 		Name:     config.FlagAddress,
 		Value:    "0.0.0.0:3030",
@@ -36,11 +39,20 @@ var (
 )
 
 func main() {
+	cfg, err := config.Load("")
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctn := container.NewContainer(cfg)
+
 	app := cli.NewApp()
 	app.Name = appName
 	app.Version = backend.Version
 	flags := []cli.Flag{
 		&configFileFlag,
+	}
+	app.Metadata = map[string]any{
+		"container": ctn,
 	}
 	app.Commands = []*cli.Command{
 		{
@@ -53,7 +65,6 @@ func main() {
 			Name:    "api",
 			Aliases: []string{},
 			Usage:   "Run the api",
-			Before:  beforeStartApiServer,
 			Action:  startAPIServer,
 			Flags:   append(flags, &configAddressFlag),
 		},
@@ -61,7 +72,6 @@ func main() {
 			Name:    "cron-job",
 			Aliases: []string{},
 			Usage:   "Run the cron job to track the bridge request in database",
-			Before:  beforeStartCronjob,
 			Action:  startCronjob,
 			Flags:   append(flags, &configAddressFlag),
 		},
@@ -69,7 +79,6 @@ func main() {
 			Name:    "crawler",
 			Aliases: []string{},
 			Usage:   "Run the cron job to track the bridge request in database",
-			Before:  beforeStartCrawler,
 			Action:  startCrawler,
 			Flags:   append(flags, &configAddressFlag),
 		},
@@ -77,7 +86,6 @@ func main() {
 			Name:    "blockchain",
 			Aliases: []string{},
 			Usage:   "Run the blockchain job",
-			Before:  beforeStartBlockchain,
 			Action:  startBlockchain,
 			Flags:   append(flags, &configAddressFlag),
 		},
@@ -85,13 +93,12 @@ func main() {
 			Name:    "migration",
 			Aliases: []string{},
 			Usage:   "Run the migration",
-			Before:  beforeMigration,
 			Action:  startMigration,
 			Flags:   append(flags, &configMigrateActionFlag),
 		},
 	}
 
-	err := app.Run(os.Args)
+	err = app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)

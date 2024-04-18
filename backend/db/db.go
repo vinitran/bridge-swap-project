@@ -1,27 +1,29 @@
 package db
 
 import (
-	"database/sql"
+	"context"
 	"fmt"
 	"log"
+	"runtime"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	"github.com/uptrace/bun/driver/pgdriver"
 )
 
 // NewSQLDB creates a new SQL DB
-func NewSQLDB(cfg DatabaseConfig) *bun.DB {
+func NewSQLDB(cfg DatabaseConfig) (*pgxpool.Pool, error) {
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
-	log.Println("postgres dns: ", dsn)
+	config, err := pgxpool.ParseConfig(dsn)
+	if err != nil {
+		return nil, err
+	}
+	log.Printf("connecting to %s", dsn)
 
-	var db *bun.DB
-	db = bun.NewDB(sql.OpenDB(pgdriver.NewConnector(
-		pgdriver.WithDSN(dsn),
-	)), pgdialect.New())
+	max := runtime.NumCPU() * 4
+	config.MaxConns = int32(max)
 
-	return db
+	return pgxpool.NewWithConfig(context.Background(), config)
 }
 
 // NewRedis creates a new REDIS DB

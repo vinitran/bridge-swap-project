@@ -4,3 +4,9 @@ export const formatBalance = (rawBalance: string) => {
   ).toFixed(2);
   return balance;
 };
+
+export const formatPrice = (value: number | undefined): string => {
+  return value == undefined
+    ? ''
+    : value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};

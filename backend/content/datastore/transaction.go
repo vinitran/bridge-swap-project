@@ -2,17 +2,25 @@ package datastore
 
 import (
 	"context"
+	"time"
+
+	"github.com/stephenafamo/bob"
+	"github.com/stephenafamo/bob/dialect/psql"
+	"github.com/stephenafamo/bob/dialect/psql/um"
+	"github.com/stephenafamo/scan"
 
 	b "bridge/content/bob"
 
 	"github.com/aarondl/opt/omit"
 	"github.com/google/uuid"
-	"github.com/stephenafamo/bob"
 )
 
-type DatastoreTransaction struct{}
+type DatastoreTransaction struct {
+	pool        PGXPool
+	bobExecutor BobExecutor
+}
 
-func (ds *DatastoreTransaction) Insert(ctx context.Context, exec bob.Executor, params *b.Transaction) (*b.Transaction, error) {
+func (ds *DatastoreTransaction) Create(ctx context.Context, params *b.Transaction) (*b.Transaction, error) {
 	paramsSetter := b.TransactionSetter{
 		ID:         omit.From(uuid.New()),
 		User:       omit.From(params.User),
@@ -24,20 +32,33 @@ func (ds *DatastoreTransaction) Insert(ctx context.Context, exec bob.Executor, p
 		CreatedAt:  omit.From(params.CreatedAt),
 		UpdatedAt:  omit.From(params.UpdatedAt),
 	}
-	return b.TransactionsTable.Insert(ctx, exec, &paramsSetter)
+	return b.TransactionsTable.Insert(ctx, ds.bobExecutor, &paramsSetter)
 }
 
-func (ds *DatastoreTransaction) FindById(ctx context.Context, exec bob.Executor, id string) (*b.Transaction, error) {
-	return b.FindTransaction(ctx, exec, uuid.MustParse(id))
+func (ds *DatastoreTransaction) FindByUID(ctx context.Context, id uuid.UUID) (*b.Transaction, error) {
+	return b.FindTransaction(ctx, ds.bobExecutor, id)
 }
 
-func (ds *DatastoreTransaction) SetComplete(ctx context.Context, exec bob.Executor, txId string) error {
-	tx, err := b.FindTransaction(ctx, exec, uuid.MustParse(txId))
-	if err != nil {
-		return err
+func (ds *DatastoreTransaction) Update(ctx context.Context, id uuid.UUID, params *b.TransactionSetter) error {
+	params.UpdatedAt = omit.From(time.Now())
+
+	builder := psql.Update(
+		um.Table(b.TransactionsTable.Name(ctx)),
+		um.Where(b.TransactionColumns.ID.EQ(psql.Arg(id))),
+		um.Returning("*"),
+	)
+
+	ks, vs := PrepareSetterMap(ctx, params)
+	for i, x := range ks {
+		builder.Apply(
+			um.Set(x).ToArg(vs[i]),
+		)
 	}
-	tx.IsComplete = true
 
-	_, err = b.TransactionsTable.Update(ctx, exec, tx)
+	_, err := bob.One(ctx, ds.bobExecutor, builder, scan.StructMapper[*b.Transaction]())
 	return err
+}
+
+func NewDatastoreTransaction(pool PGXPool) (*DatastoreTransaction, error) {
+	return &DatastoreTransaction{pool, &BobExecutorPgx{pool}}, nil
 }

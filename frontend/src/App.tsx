@@ -16,6 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { notificationObservable } from './service/noti.service';
 import { toast } from 'react-toastify';
+import { CoinDetailScreen } from './screen/coin-detail.screen';
 
 function App() {
   const sidebarListener = new BehaviorSubject(false);
@@ -45,7 +46,7 @@ function App() {
       <ToastContainer />
       <Header sidebarSubject={sidebarListener} />
       <Sidebar listener={sidebarListener$} />
-      <div className=" overflow-y-auto max-h-full h-full">
+      <div className=" overflow-y-hidden max-h-full h-full">
         <Routes>
           <Route
             path="/"
@@ -60,6 +61,7 @@ function App() {
             element={<PoolScreen sidebarSubject={sidebarListener} />}
           />
           <Route path="/tokens" element={<Token />} />
+          <Route path="/coin-detail/:paramId" element={<CoinDetailScreen />} />
           <Route path="/faucet" element={<FaunetScreen />} />
         </Routes>
       </div>

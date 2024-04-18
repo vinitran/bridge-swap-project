@@ -25,6 +25,13 @@
   overflow-y: scroll;
 }
 
+.page-height {
+  height: 100dvh;
+}
+.page-container-height {
+  height: calc(100dvh - 112px);
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

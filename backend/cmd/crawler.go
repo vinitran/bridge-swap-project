@@ -1,15 +1,18 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"time"
+
+	"bridge/content/service"
+
+	"github.com/redis/go-redis/v9"
+	"github.com/samber/do"
 
 	"bridge/content/bob"
 	"bridge/etherman"
 
-	"bridge/config"
-	"bridge/content/datastore"
-	"bridge/context"
 	"github.com/urfave/cli/v2"
 )
 
@@ -20,19 +23,23 @@ const (
 	MAX_CHANEL = 20
 )
 
-func beforeStartCrawler(c *cli.Context) error {
-	cfg, err := config.Load(c)
+func startCrawler(c *cli.Context) error {
+	container, ok := c.App.Metadata["container"].(*do.Injector)
+	if !ok {
+		return errors.New("invalid service container")
+	}
+
+	chainClient, err := do.Invoke[[]*etherman.Client](container)
 	if err != nil {
 		return err
 	}
-	context.SetContextSQL(cfg.Database)
-	context.SetContextRedisClient(cfg.Redis)
-	context.SetChainClient()
-	return nil
-}
 
-func startCrawler(c *cli.Context) error {
-	chainClient, err := etherman.NewAllClient(Config().Etherman)
+	serviceTransaction, err := do.Invoke[*service.ServiceTransaction](container)
+	if err != nil {
+		return err
+	}
+
+	redisClient, err := do.Invoke[*redis.Client](container)
 	if err != nil {
 		return err
 	}
@@ -51,18 +58,19 @@ func startCrawler(c *cli.Context) error {
 		}(chain)
 	}
 
+	log.Println("Starting crawler")
+
 	for {
 		select {
 		case event := <-events:
-
-			tx := datastore.DatastoreTransaction{}
-			transaction, err := tx.Insert(ctx, SQLRepository(), EventDatastoreToBob(event))
+			log.Println("Received event", event)
+			transaction, err := serviceTransaction.Create(ctx, EventDatastoreToBob(event))
 			if err != nil {
 				log.Println(err)
 				continue
 			}
 
-			err = RedisRepository().Publish(ctx, redisNewDepositEvent, transaction.ID.String()).Err()
+			err = redisClient.Publish(ctx, redisNewDepositEvent, transaction.ID.String()).Err()
 			if err != nil {
 				return err
 			}

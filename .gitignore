@@ -1,3 +1,9 @@
 /pgdata
 /redisdata
 /docker-compose.override.yml
+/.env
+/frontend/package-lock.json
+/frontend/yarn.lock
+/contract/bridge/artifacts
+/contract/bridge/cache
+/contract/bridge/node_modules

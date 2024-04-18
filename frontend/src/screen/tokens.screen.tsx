@@ -37,7 +37,7 @@ export const Token = () => {
     }, [timeValue])
 
     return (
-        <div className="w-full items-center flex bg-slate-900 py-10 px-36 flex-col pt-40 overflow-y-scroll min-h-screen">
+        <div className="page-height w-full items-center flex bg-slate-900 py-10 px-36 flex-col pt-40 overflow-y-auto min-h-screen">
             <div className=" text-white text-4xl w-full mb-2">Top tokens</div>
             {/* <div className=' flex flex-row justify-start w-full mt-3'>
                 <div className=' mr-4'>

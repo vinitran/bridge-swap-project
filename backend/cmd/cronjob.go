@@ -1,40 +1,34 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"time"
 
-	"bridge/config"
-	"bridge/content/bob"
-	"bridge/context"
+	"bridge/content/service"
+
+	"github.com/samber/do"
 	"github.com/urfave/cli/v2"
 )
 
-func beforeStartCronjob(c *cli.Context) error {
-	cfg, err := config.Load(c)
+func startCronjob(c *cli.Context) error {
+	container, ok := c.App.Metadata["container"].(*do.Injector)
+	if !ok {
+		return errors.New("invalid service container")
+	}
+
+	serviceBridge, err := do.Invoke[*service.ServiceBridge](container)
 	if err != nil {
 		return err
 	}
-	context.SetContextSQL(cfg.Database)
-	return nil
-}
 
-func startCronjob(c *cli.Context) error {
 	for {
-		expiredRequest, err := bob.BridgeRequests(ctx,
-			SQLRepository(),
-			bob.SelectWhere.BridgeRequests.CreatedAt.LTE(time.Now().Add(-10*time.Minute)),
-		).All()
+		log.Println("asdasd")
+		err := serviceBridge.DeleteExpired(c.Context)
 		if err != nil {
-			log.Println(err)
-			continue
-		}
-
-		_, err = expiredRequest.DeleteAll(ctx, SQLRepository())
-		if err != nil {
-			log.Println(err)
-			continue
+			return err
 		}
 		time.Sleep(10 * time.Minute)
 	}
+	return nil
 }

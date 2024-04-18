@@ -11,7 +11,6 @@ import (
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
-	"github.com/urfave/cli/v2"
 )
 
 const (
@@ -58,12 +57,11 @@ func Default() (*Config, error) {
 }
 
 // Load loads the configuration
-func Load(ctx *cli.Context) (*Config, error) {
+func Load(configFilePath string) (*Config, error) {
 	cfg, err := Default()
 	if err != nil {
 		return nil, err
 	}
-	configFilePath := ctx.String(FlagCfg)
 	if configFilePath != "" {
 		dirName, fileName := filepath.Split(configFilePath)
 		log.Println("config path: ", configFilePath)

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import { LineChart, Line } from "recharts";
 import { CoinData } from "../../screen/tokens.screen";
+import { useNavigate } from "react-router-dom";
 
 interface TableItemProps {
     item: CoinData,
@@ -10,6 +11,7 @@ interface TableItemProps {
 }
 
 export const TokenTableItem = ({ item, index }: TableItemProps) => {
+    const navigate = useNavigate();
 
     const formatDollars = useCallback((value: number) => {
         const suffixes = ['', 'K', 'M', 'B', 'T'];
@@ -27,8 +29,12 @@ export const TokenTableItem = ({ item, index }: TableItemProps) => {
         return `$${formattedValue} ${suffix}`;
     }, [])
 
+    const handleRedirectCoinDetail = () => {
+        navigate(`/coin-detail/${item.id}`);
+    }
+
     return (
-        <tr>
+        <tr className="cursor-pointer" onClick={handleRedirectCoinDetail}>
             <td className=" text-right text-white py-2 px-2">{index + 1}</td>
             <td className=" text-left text-white py-2 px-2 font-medium">{item.name}</td>
             <td className=" text-right text-white py-2 px-2 font-medium">${item.current_price}</td>

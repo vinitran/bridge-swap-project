@@ -26,6 +26,7 @@ var (
 	TransferEventHash = crypto.Keccak256Hash([]byte("Transfer(address,address,uint256)"))
 
 	ErrNotFound           = errors.New("not found")
+	ErrInvalidChainId     = errors.New("invalid chainid")
 	ErrPrivateKeyNotFound = errors.New("can't find sender private key to sign tx")
 )
 
@@ -59,7 +60,7 @@ func NewClientFromChainId(chainId uint64, cfg Config) (*Client, error) {
 	case SEPOLIA_CHAIN_ID:
 		return NewClient(cfg.Sepolia)
 	default:
-		return nil, fmt.Errorf("invalid chain id")
+		return nil, ErrInvalidChainId
 	}
 }
 

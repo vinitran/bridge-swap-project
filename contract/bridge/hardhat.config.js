@@ -11,8 +11,8 @@ module.exports = {
       gasPrice: 100000000000,
       blockGasLimit: 10000000
     },
-    cvctest: {
-      url: "https://rpc-kura.cross.technology/",
+    sepolia: {
+      url: "https://ethereum-sepolia-rpc.publicnode.com",
       accounts: [process.env.PRIV_KEY],
       gasPrice: 100000000000,
       blockGasLimit: 10000000
@@ -22,5 +22,8 @@ module.exports = {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
     apiKey: process.env.API_KEY
-  }
+  },
+  sourcify: {
+    enabled: true
+  }  
 };
