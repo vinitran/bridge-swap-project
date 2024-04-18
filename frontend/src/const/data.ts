@@ -1,17 +1,15 @@
-import { icons } from 'react-icons/lib';
-
 const chain = [
   {
     chainId: '97',
     name: 'BSC Testnet',
     img: '',
-    bridgeContractAddress: '0xd15e20F76DC9D2f0671a2E20c303c42d1445c8dd',
+    bridgeContractAddress: '0x8d71457D68cF892E8B925dda3057F488DBb75b48',
   },
   {
-    chainId: '5555',
-    name: 'CVC Testnet',
+    chainId: '11155111',
+    name: 'ETH Sepolia',
     img: '',
-    bridgeContractAddress: '0x3ea491a040fa14d8df9457f1a9699b3315d482e3',
+    bridgeContractAddress: '0x3700D35ba6D925C6119d03DDA4173B745814AB95',
   },
 ];
 
@@ -25,33 +23,21 @@ const coin: {
       icon: 'https://icon-library.com/images/v-icon/v-icon-11.jpg',
     },
     {
-      name: 'BNB',
-      address: '0x0000000000000000000000000000000000000000',
-      icon: 'https://w7.pngwing.com/pngs/997/942/png-transparent-bnb-crypto-cryptocurrency-cryptocurrencies-cash-money-bank-payment-icon.png',
+      name: 'WETH',
+      address: '0x7c081C1E89Bdb0ed98238CBF15b9B214F6091E5D',
+      icon: 'https://i.postimg.cc/sDLnZnB7/w-ETH-desktop-1.png',
     },
   ],
-  '5': [
+  '11155111': [
     {
       name: 'VINI',
-      address: '',
+      address: '0x15f8253779428d9ea5b054deef3e454d539ddf7e',
       icon: 'https://icon-library.com/images/v-icon/v-icon-11.jpg',
     },
     {
-      name: 'ETH',
-      address: '0x0000000000000000000000000000000000000000',
-      icon: 'https://icons.iconarchive.com/icons/cjdowner/cryptocurrency-flat/512/Ethereum-ETH-icon.png',
-    },
-  ],
-  '5555': [
-    {
-      name: 'VINI',
-      address: '0x596c14ba2b6e759c73895ce13e64e49054181a7f',
-      icon: 'https://icon-library.com/images/v-icon/v-icon-11.jpg',
-    },
-    {
-      name: 'XCR',
-      address: '0x0000000000000000000000000000000000000000',
-      icon: 'https://testnet.cvcscan.com/images/favicon-32x32-c8479ca561589b59867e59143bfe63a5.png?vsn=d',
+      name: 'WETH',
+      address: '0xB634FE6B4Fca5DF7E7b609a4b3350b9c02077Ae4',
+      icon: 'https://i.postimg.cc/sDLnZnB7/w-ETH-desktop-1.png',
     },
   ],
 };
