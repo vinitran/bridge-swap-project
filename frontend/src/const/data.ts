@@ -2,13 +2,13 @@ const chain = [
   {
     chainId: '97',
     name: 'BSC Testnet',
-    img: '',
+    img: 'https://i.postimg.cc/Jzhx9jHW/binance-smart-chain-bsc-seeklogo-1.png',
     bridgeContractAddress: '0x8d71457D68cF892E8B925dda3057F488DBb75b48',
   },
   {
     chainId: '11155111',
     name: 'ETH Sepolia',
-    img: '',
+    img: 'https://i.postimg.cc/x1Fw7fCt/the-dolphin-po0q7ezlhqqzvrfmzw0atih2l0vqelut73w4eh5qtc.png',
     bridgeContractAddress: '0x3700D35ba6D925C6119d03DDA4173B745814AB95',
   },
 ];

@@ -66,9 +66,13 @@ export const FaunetScreen = () => {
         />
         <div className="relative">
           <div
-            className=" flex flex-row items-center rounded-lg bg-slate-800 h-12 mr-3 px-3 cursor-pointer w-36"
+            className=" flex flex-row items-center rounded-lg bg-slate-800 h-12 mr-3 px-3 cursor-pointer w-44 justify-between "
             onClick={() => setOpenChain(!isOpenChain)}
           >
+            <img
+              src={chain.img}
+              className=" w-6 h-6 rounded-full  mr-1 object-cover"
+            />
             <div className=" text-white text-lg mr-2">{chain?.name}</div>
             {isOpenChain ? (
               <BsChevronUp color="white" />
@@ -78,19 +82,25 @@ export const FaunetScreen = () => {
           </div>
           <div>
             {isOpenChain && (
-              <div className=" absolute rounded-lg overflow-hidden bg-slate-800">
-                {Data.chain.map(chain => {
-                  return (
-                    <div
-                      className=" flex flex-row items-center bg-slate-800 h-12 px-3 cursor-pointer w-20"
-                      onClick={() => onSelectChain(chain)}
-                    >
-                      <div className=" text-white text-lg mr-6">
-                        {chain.name}
+              <div className="absolute pt-1">
+                <div className=" rounded-lg overflow-hidden bg-slate-800">
+                  {Data.chain.map(selectChain => {
+                    return (
+                      <div
+                        className=" flex flex-row items-center bg-slate-800 h-12 px-3 cursor-pointer w-44"
+                        onClick={() => onSelectChain(selectChain)}
+                      >
+                        <img
+                          src={selectChain.img}
+                          className=" w-6 h-6 rounded-full  mr-1 object-cover"
+                        />
+                        <div className=" text-white text-lg mr-6">
+                          {selectChain.name}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
@@ -110,23 +120,25 @@ export const FaunetScreen = () => {
           </div>
           <div>
             {isOpenCoin && (
-              <div className=" absolute rounded-lg overflow-hidden bg-slate-800">
-                {Data.coin[chain.chainId].map(coin => {
-                  return (
-                    <div
-                      className=" flex flex-row items-center bg-slate-800 h-12 px-3 cursor-pointer w-28"
-                      onClick={() => onSelectCoin(coin)}
-                    >
-                      <img
-                        src={coin.icon}
-                        className=" w-6 h-6 rounded-full  mr-1"
-                      />
-                      <div className=" text-white text-lg mr-6">
-                        {coin.name}
+              <div className="absolute pt-1">
+                <div className=" absolute rounded-lg overflow-hidden bg-slate-800">
+                  {Data.coin[chain.chainId].map(coin => {
+                    return (
+                      <div
+                        className=" flex flex-row items-center bg-slate-800 h-12 px-3 cursor-pointer w-28"
+                        onClick={() => onSelectCoin(coin)}
+                      >
+                        <img
+                          src={coin.icon}
+                          className=" w-6 h-6 rounded-full  mr-1"
+                        />
+                        <div className=" text-white text-lg mr-6">
+                          {coin.name}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>

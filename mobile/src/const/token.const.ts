@@ -7,50 +7,26 @@ export interface TokenData {
 export const tokenData: { [key: string]: TokenData[] } = {
   '97': [
     {
-      name: 'USDT',
-      address: '0x337610D27c682E347C9cD64B773b136F07C7a64D',
-      image: '',
+      name: 'VINI',
+      address: '0x6b08b796b4b43d565c34cf4b57d8c871db410ebe',
+      image: 'https://icon-library.com/images/v-icon/v-icon-11.jpg',
     },
     {
-      name: 'BNB',
-      address: '0xae13d9843a79d44b2997915a7343a960e43a1107',
-      image: '',
-    },
-  ],
-  '1': [
-    {
-      name: 'USDT',
-      address: '0x337610D27c682E347C9cD64B773b136F07C7a64D',
-      image: '',
-    },
-    {
-      name: 'BNB',
-      address: '0xae13d9843a79d44b2997915a7343a960e43a1107',
-      image: '',
+      name: 'WETH',
+      address: '0x7c081C1E89Bdb0ed98238CBF15b9B214F6091E5D',
+      image: 'https://i.postimg.cc/sDLnZnB7/w-ETH-desktop-1.png',
     },
   ],
-  '137': [
+  '11155111': [
     {
-      name: 'USDT',
-      address: '0x337610D27c682E347C9cD64B773b136F07C7a64D',
-      image: '',
+      name: 'VINI',
+      address: '0x15f8253779428d9ea5b054deef3e454d539ddf7e',
+      image: 'https://icon-library.com/images/v-icon/v-icon-11.jpg',
     },
     {
-      name: 'BNB',
-      address: '0xae13d9843a79d44b2997915a7343a960e43a1107',
-      image: '',
-    },
-  ],
-  '42161': [
-    {
-      name: 'USDT',
-      address: '0x337610D27c682E347C9cD64B773b136F07C7a64D',
-      image: '',
-    },
-    {
-      name: 'BNB',
-      address: '0xae13d9843a79d44b2997915a7343a960e43a1107',
-      image: '',
+      name: 'WETH',
+      address: '0xB634FE6B4Fca5DF7E7b609a4b3350b9c02077Ae4',
+      image: 'https://i.postimg.cc/sDLnZnB7/w-ETH-desktop-1.png',
     },
   ],
 };
