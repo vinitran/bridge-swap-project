@@ -21,9 +21,9 @@ export const api = ({ url, method = API_METHOD.GET, params }: APIRequest) => {
     body: params,
     headers: {
       'Content-Type': 'application/json',
-      'rxjs-custom-header': 'Rxjs',
     },
   }).pipe(
+    map((res) => res.response),
     catchError((error) => {
       console.log('error: ', error);
       return of(error);

@@ -4,13 +4,10 @@ import { PoolScreen } from './screen/pool.screen';
 import { Header } from './component/common/header.component';
 import { Sidebar } from './component/common/right-side-bar.component';
 import { BehaviorSubject } from 'rxjs';
-import {
-  Routes,
-  Route,
-} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Token } from './screen/tokens.screen';
 import { Bridge } from './screen/bridge.screen';
-import { FaunetScreen } from './screen/faunet.screen';
+import { FaunetScreen } from './screen/faucet.screen';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -30,7 +27,7 @@ function App() {
         autoClose: 5000,
         closeOnClick: true,
         position: 'top-right',
-      })
+      });
     });
 
     return () => {
@@ -70,4 +67,3 @@ function App() {
 }
 
 export default App;
-

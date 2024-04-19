@@ -81,13 +81,13 @@ export const useToken = (
     }
   };
 
-  const approveAmountTransfer = async (contractAdd: string) => {
+  const approveAmountTransfer = async (contractAdd: string, value: string) => {
     if (contract) {
       try {
         const web3 = new Web3(window.ethereum);
 
         await contract.methods
-          .approve(contractAdd, web3.utils.toWei(100000000, 'ether'))
+          .approve(contractAdd, web3.utils.toWei(+value, 'ether'))
           .send({ from: walletAddress });
       } catch (error) {
         console.error('Error checking token balance:', error);

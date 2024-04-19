@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Coin } from '../../screen/faunet.screen';
+import { Coin } from '../../screen/faucet.screen';
 import { Data } from '../../const/data';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 

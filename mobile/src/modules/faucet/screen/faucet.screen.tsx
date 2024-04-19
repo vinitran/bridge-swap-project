@@ -3,23 +3,55 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import { ChainDrodown } from '../../../components/chain-dropdown/chain-dropdown.component';
 import { Button } from '../../../components/button/button.component';
 import { useTheme } from '../../../hook/theme.hook';
-import { useChainId, useNetwork } from 'wagmi';
+import { useAccount, useChainId, useNetwork } from 'wagmi';
 import { TokenData, tokenData } from '../../../const/token.const';
 import { AppTheme } from '../../../theme/theme';
 import { TokenDropdown } from '../../../components/token-dropdown/token-dropdown.component';
 import { Icon } from '../../../components/icon/icon.component';
+import { faucetRequest } from '../../../api/faucet.api';
+import Toast from 'react-native-toast-message';
 
 export const FaucetScreen = () => {
   const theme = useTheme();
   const styles = initStyles(theme);
-  const { chains, chain: currentChain } = useNetwork();
 
-  const [chain, setChain] = useState(currentChain ?? chains[0]);
+  const { address } = useAccount();
+  const { chains, chain: currentChain } = useNetwork();
+  const initChain = currentChain && chains.includes(currentChain) ? currentChain : chains[0];
+
+  const [chain, setChain] = useState(initChain);
   const [token, setToken] = useState<TokenData>(tokenData[chain.id][0]);
-  const [isDiffWallet, setIsDiffWallet] = useState(false);
+  const [isDiffWallet, setIsDiffWallet] = useState(!address);
   const [walletAdd, setWalletAdd] = useState<string>();
+  const [isLoading, setLoading] = useState(false);
 
   const toggleIsDiffWallet = () => setIsDiffWallet(!isDiffWallet);
+
+  const onFaucet = () => {
+    if (!walletAdd && !address) return;
+
+    setLoading(true);
+    faucetRequest({
+      user_address: isDiffWallet ? walletAdd : address,
+      chain_id: chain.id + '',
+      token: token.address,
+    }).subscribe({
+      next: (data) => {
+        if (data.code == 200) {
+          Toast.show({
+            type: 'success',
+            text1: 'Thành công',
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Thất bại',
+          });
+        }
+      },
+      complete: () => setLoading(false),
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -44,9 +76,10 @@ export const FaucetScreen = () => {
         <></>
       )}
       <Button
-        onPress={() => {}}
-        label="Give me a token"
-        style={{ container: styles.buttonContainer }}
+        disable={isLoading}
+        onPress={onFaucet}
+        label={isLoading ? 'Đang thực hiện giao dịch' : 'Give me a token'}
+        style={{ container: isLoading ? styles.buttonContainerDisable : styles.buttonContainer }}
       />
     </View>
   );
@@ -77,6 +110,15 @@ const initStyles = (theme: AppTheme) => {
       width: '100%',
       marginTop: theme.spaceMS,
     },
+    buttonContainerDisable: {
+      paddingVertical: theme.spaceMS,
+      backgroundColor: theme.neutralColor500,
+      borderRadius: theme.radiusMS,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      marginTop: theme.spaceMS,
+    },
     text: {
       marginLeft: theme.spaceMS,
       color: theme.textColor,
@@ -87,7 +129,7 @@ const initStyles = (theme: AppTheme) => {
       borderWidth: 1,
       borderColor: theme.primaryColor,
       paddingHorizontal: theme.spaceMS,
-      minHeight: theme.spaceXXL
+      minHeight: theme.spaceXXL,
     },
   });
 };

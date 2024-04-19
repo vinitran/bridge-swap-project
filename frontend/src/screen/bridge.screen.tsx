@@ -44,15 +44,19 @@ export const Bridge = ({ sidebarSubject }: Props) => {
     getTokenAvailableInPool,
     getTransferContractAdd,
     deposit,
-    contract
+    contract,
   } = useContract(walletAddress, contractAddress);
 
-  const { getWalletTokenAmount, getAmountCanTranfer, approveAmountTransfer, tokenBalance } =
-    useToken(walletAddress, coin.address);
+  const {
+    getWalletTokenAmount,
+    getAmountCanTranfer,
+    approveAmountTransfer,
+    tokenBalance,
+  } = useToken(walletAddress, coin.address);
 
   useEffect(() => {
-    document.title = "Bridge"
-  })
+    document.title = 'Bridge';
+  });
 
   useEffect(() => {
     if (currentChainId?.toString() != chainIn.chainId) {
@@ -63,21 +67,25 @@ export const Bridge = ({ sidebarSubject }: Props) => {
   }, [currentChainId, chainIn.chainId]);
 
   useEffect(() => {
-    getTokenAmount()
-  }, [walletAddress, currentChainId, chainIn.chainId])
+    getTokenAmount();
+  }, [walletAddress, currentChainId, chainIn.chainId]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (Number(tokenAvaible) > 0) {
-        getTokenAvailableInPool(coin.address).then(amount => setTokenAvailable(amount));
-        clearInterval(interval)
-      }
-      if (!!contract) {
-        getTokenAvailableInPool(coin.address).then(amount => setTokenAvailable(amount));
+        getTokenAvailableInPool(coin.address).then(amount =>
+          setTokenAvailable(amount),
+        );
         clearInterval(interval);
       }
-    }, 1000)
-  })
+      if (!!contract) {
+        getTokenAvailableInPool(coin.address).then(amount =>
+          setTokenAvailable(amount),
+        );
+        clearInterval(interval);
+      }
+    }, 1000);
+  });
 
   useEffect(() => {
     setCoin(Data.coin[chainIn.chainId][0]);
@@ -89,25 +97,27 @@ export const Bridge = ({ sidebarSubject }: Props) => {
   };
 
   const getTokenAmount = () => {
-    if (
-      !contractAddress ||
-      currentChainId?.toString() != chainIn.chainId
-    ) {
-
+    if (!contractAddress || currentChainId?.toString() != chainIn.chainId) {
       setTokenAmountMax(undefined);
       setTokenAvailable(undefined);
       return;
     }
 
     const timeout = setTimeout(() => {
-      getTokenAvailableInPool(coin.address).then(amount => setTokenAvailable(amount));
-      if (coin.name != "VINI") {
-        web3.eth.getBalance(walletAddress).then(balance => setTokenAmountMax(web3.utils.fromWei(balance, 'ether')))
+      getTokenAvailableInPool(coin.address).then(amount =>
+        setTokenAvailable(amount),
+      );
+      if (coin.name != 'VINI') {
+        web3.eth
+          .getBalance(walletAddress)
+          .then(balance =>
+            setTokenAmountMax(web3.utils.fromWei(balance, 'ether')),
+          );
       } else {
         getWalletTokenAmount().then(amount => setTokenAmountMax(amount));
       }
-      clearTimeout(timeout)
-    }, 3000)
+      clearTimeout(timeout);
+    }, 3000);
   };
 
   useEffect(() => {
@@ -115,7 +125,7 @@ export const Bridge = ({ sidebarSubject }: Props) => {
   }, [walletAddress, currentChainId, chainIn.chainId, contractAddress, coin]);
 
   const onBridge = async () => {
-    if (!(amount || 0) || isLoading) {
+    if (!amount || isLoading) {
       return;
     }
 
@@ -124,9 +134,8 @@ export const Bridge = ({ sidebarSubject }: Props) => {
       contractTranferAdd as string,
     );
     if (+(allowanceAmount || 0) < +(amount || 0)) {
-      await approveAmountTransfer(contractTranferAdd as string);
+      await approveAmountTransfer(contractTranferAdd as string, amount);
     }
-
     api
       .post('/api/v1/bridge', {
         in_chain: chainIn.chainId,
@@ -140,12 +149,17 @@ export const Bridge = ({ sidebarSubject }: Props) => {
           notify(res.data.message, 'error');
           return;
         } else {
-
           setLoading(true);
-          deposit(coin.address, amount as string).then(res => {
-            setLoading(false)
-            notify('Transaction Success', 'success')
-          }).catch(e => { setLoading(false); notify('Transaction Error', 'error') });
+          console.log('deposit ne');
+          deposit(coin.address, amount as string)
+            .then(res => {
+              setLoading(false);
+              notify('Transaction Success', 'success');
+            })
+            .catch(e => {
+              setLoading(false);
+              notify('Transaction Error', 'error');
+            });
         }
       });
   };
@@ -181,7 +195,11 @@ export const Bridge = ({ sidebarSubject }: Props) => {
         className=" mt-2 w-full h-14 py-3 text-center justify-center bg-orange-500/90 rounded-xl text-white font-medium text-xl cursor-pointer"
         onClick={onBridge}
       >
-        {isLoading ? <PropagateLoader color='white' className=' mt-2' /> : <div>Bridge</div>}
+        {isLoading ? (
+          <PropagateLoader color="white" className=" mt-2" />
+        ) : (
+          <div>Bridge</div>
+        )}
       </div>
     );
   };
@@ -247,12 +265,12 @@ export const Bridge = ({ sidebarSubject }: Props) => {
               )}
             </div>
           </div>
-          {(tokenAmountMax && coin.name != "VINI") && (
+          {tokenAmountMax && coin.name != 'VINI' && (
             <div className=" text-slate-400 w-full text-right pr-[14px] mb-2">
               Balance: {Number(tokenAmountMax).toFixed(8)}
             </div>
           )}
-          {(tokenBalance && coin.name == "VINI") && (
+          {tokenBalance && coin.name == 'VINI' && (
             <div className=" text-slate-400 w-full text-right pr-[14px] mb-2">
               Balance: {Number(tokenBalance).toFixed(8)}
             </div>

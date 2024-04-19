@@ -31,11 +31,13 @@ export const FaunetScreen = () => {
   const onSelectCoin = (coin: Coin) => {
     setToken(coin);
     setOpenCoin(false);
+    setOpenCoin(false);
   };
 
   const onSelectChain = (chain: Chain) => {
     setCurrentChain(chain);
     setToken(Data.coin[chain.chainId][0]);
+    setOpenChain(false);
   };
 
   const onFaucet = () => {
@@ -107,7 +109,7 @@ export const FaunetScreen = () => {
         </div>
         <div className="relative">
           <div
-            className=" flex flex-row items-center rounded-lg bg-slate-800 h-12 mr-3 px-3 cursor-pointer w-28"
+            className=" flex flex-row items-center rounded-lg bg-slate-800 h-12 mr-3 px-3 cursor-pointer w-32 justify-between"
             onClick={() => setOpenCoin(!isOpenCoin)}
           >
             <img src={token.icon} className=" w-6 h-6 rounded-full  mr-1" />
@@ -120,12 +122,12 @@ export const FaunetScreen = () => {
           </div>
           <div>
             {isOpenCoin && (
-              <div className="absolute pt-1">
+              <div className="absolute pt-1 w-30">
                 <div className=" absolute rounded-lg overflow-hidden bg-slate-800">
                   {Data.coin[chain.chainId].map(coin => {
                     return (
                       <div
-                        className=" flex flex-row items-center bg-slate-800 h-12 px-3 cursor-pointer w-28"
+                        className=" flex flex-row items-center bg-slate-800 h-12 px-3 w-32 cursor-pointer"
                         onClick={() => onSelectCoin(coin)}
                       >
                         <img

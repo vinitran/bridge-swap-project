@@ -54,7 +54,7 @@ export const TokenDropdown = ({ tokenList, value, onValueChange }: TokenDropdown
 
       return (
         <View style={styles.flexRow}>
-          {/* <Image /> */}
+          <Image source={{ uri: token.image }} style={styles.image} resizeMode="cover" />
           <Text style={styles.text}>{token.name}</Text>
           {isOpen ? (
             <Icon name="chevron-up" style={styles.icon} disable />
@@ -71,7 +71,7 @@ export const TokenDropdown = ({ tokenList, value, onValueChange }: TokenDropdown
     ({ item }: RenderItemProps) => {
       return (
         <TouchableOpacity style={styles.modalItemContainer} onPress={() => onPressItem(item)}>
-          <Image />
+          <Image source={{ uri: item.image }} style={styles.image} resizeMode="cover" />
           <Text style={styles.modalItemText}>{item.name}</Text>
         </TouchableOpacity>
       );
@@ -155,11 +155,12 @@ const initStyles = (theme: AppTheme) => {
       flexDirection: 'row',
       width: '100%',
       paddingVertical: theme.spaceS,
-      paddingHorizontal: theme.spaceMS,
+      paddingHorizontal: theme.spaceS,
     },
     modalItemText: {
       fontWeight: '600',
       color: theme.textColor,
+      fontSize: theme.fontL,
     },
     title: {
       color: theme.textColor,
@@ -169,6 +170,13 @@ const initStyles = (theme: AppTheme) => {
     flatList: {
       width: '100%',
       maxHeight: '70%',
+    },
+    image: {
+      width: theme.spaceLL,
+      height: theme.spaceLL,
+      borderRadius: theme.radiusCircle,
+      overflow: 'hidden',
+      marginRight: theme.spaceS,
     },
   });
 };
