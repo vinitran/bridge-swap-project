@@ -1,12 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { ReactElement, ReactNode } from 'react';
-import { BridgeScreen } from '../modules/bridge/screen/bridge.screen';
-import { Icon } from '../components/icon/icon.component';
+import React from 'react';
 import { useTheme } from '@react-navigation/native';
-import { SwapScreen } from '../modules/swap/screen/swap.screen';
-import { AccountScreen } from '../modules/account/screen/account.screen';
 import { TabIcon } from './components/tab-icon.component';
-import { FaucetScreen } from '../modules/faucet/screen/faucet.screen';
+import { MatchListScreen } from '../modules/home/screen/match-list.screen';
+import { HomeNavigation } from './home.navigation';
 
 interface TabNavigatorProps {
   name: string;
@@ -23,27 +20,27 @@ export const MainNavigation = () => {
     {
       name: 'bridge',
       icon: 'bridge',
-      component: BridgeScreen,
+      component: HomeNavigation,
       tabName: 'Bridge',
     },
-    {
-      name: 'swap',
-      icon: 'swap-outline',
-      component: SwapScreen,
-      tabName: 'Swap',
-    },
-    {
-      name: 'faucet',
-      icon: 'faucet',
-      component: FaucetScreen,
-      tabName: 'Faucet',
-    },
-    {
-      name: 'account',
-      icon: 'account',
-      component: AccountScreen,
-      tabName: 'Account',
-    },
+    // {
+    //   name: 'swap',
+    //   icon: 'swap-outline',
+    //   component: SwapScreen,
+    //   tabName: 'Swap',
+    // },
+    // {
+    //   name: 'faucet',
+    //   icon: 'faucet',
+    //   component: FaucetScreen,
+    //   tabName: 'Faucet',
+    // },
+    // {
+    //   name: 'account',
+    //   icon: 'account',
+    //   component: AccountScreen,
+    //   tabName: 'Account',
+    // },
   ];
 
   return (

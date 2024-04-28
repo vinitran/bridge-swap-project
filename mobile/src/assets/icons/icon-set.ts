@@ -14,6 +14,7 @@ import icFaucet from './faucet.svg';
 import icCheckboxOutline from './checkbox-outline.svg';
 import icCheckboxFill from './checkbox-fill.svg';
 import icCheckboxNone from './checkbox-none.svg';
+import icLive from './live.svg';
 
 export const iconSet: { [key: string]: string } = {
   bridge: icBridge,
@@ -32,4 +33,5 @@ export const iconSet: { [key: string]: string } = {
   'checkbox-outline': icCheckboxOutline,
   'checkbox-fill': icCheckboxFill,
   'checkbox-none': icCheckboxNone,
+  live: icLive,
 };

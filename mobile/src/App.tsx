@@ -6,8 +6,8 @@ import { ThemeProvider } from './theme/theme.provider';
 import { Appearance } from 'react-native';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
-import { WalletProvider } from './providers/wallet.provider';
 import { AppWrapper } from './components/app-wrapper/app-wrapper.component';
+import { AppProvider } from './providers/app.provider';
 
 function App(): React.JSX.Element {
   useEffect(() => {
@@ -19,9 +19,9 @@ function App(): React.JSX.Element {
       <AppWrapper>
         <NavigationContainer>
           <ThemeProvider>
-            <WalletProvider>
+            <AppProvider>
               <MainNavigation />
-            </WalletProvider>
+            </AppProvider>
           </ThemeProvider>
         </NavigationContainer>
       </AppWrapper>
